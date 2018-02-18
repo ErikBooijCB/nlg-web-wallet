@@ -20,24 +20,24 @@ interface AccessTokenServiceInterface
     public function createToken(string $emailAddress, string $password, DateInterval $validity): AccessToken;
 
     /**
-     * @param UserProvidedAccessToken $accessToken
+     * @param TokenIdentifier $accessToken
      *
      * @return void
      * @throws UnableToExpireAccessTokenException
      */
-    public function expireToken(UserProvidedAccessToken $accessToken);
+    public function expireToken(TokenIdentifier $accessToken);
 
     /**
-     * @param UserProvidedRefreshToken $refreshToken
+     * @param TokenIdentifier $refreshToken
      *
      * @return AccessToken
      */
-    public function refreshToken(UserProvidedRefreshToken $refreshToken): AccessToken;
+    public function refreshToken(TokenIdentifier $refreshToken): AccessToken;
 
     /**
-     * @param UserProvidedAccessToken $accessToken
+     * @param TokenIdentifier $accessToken
      *
      * @return bool
      */
-    public function validateToken(UserProvidedAccessToken $accessToken): bool;
+    public function validateToken(TokenIdentifier $accessToken): bool;
 }

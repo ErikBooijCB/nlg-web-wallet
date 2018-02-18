@@ -11,8 +11,6 @@ use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
-use GuldenWallet\Backend\Application\Access\UserProvidedAccessToken;
-use GuldenWallet\Backend\Application\Access\UserProvidedRefreshToken;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\ExpireAccessTokenStatement;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\FetchCredentialsStatement;
@@ -65,12 +63,12 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
     /**
      * @inheritdoc
      */
-    public function expireToken(UserProvidedAccessToken $accessToken)
+    public function expireToken(TokenIdentifier $accessToken)
     {
         try {
             $statement = Prepare::statement(
                 $this->pdo,
-                new ExpireAccessTokenStatement($accessToken->getTokenIdentifier())
+                new ExpireAccessTokenStatement($accessToken)
             );
 
             $statement->execute();
@@ -81,8 +79,10 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
 
     /**
      * @inheritdoc
+     *
+     * @codeCoverageIgnore until implementation is in place
      */
-    public function refreshToken(UserProvidedRefreshToken $refreshToken): AccessToken
+    public function refreshToken(TokenIdentifier $refreshToken): AccessToken
     {
         // TODO: Implement refreshToken() method.
 
@@ -95,8 +95,10 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
 
     /**
      * @inheritdoc
+     *
+     * @codeCoverageIgnore until implementation is in place
      */
-    public function validateToken(UserProvidedAccessToken $accessToken): bool
+    public function validateToken(TokenIdentifier $accessToken): bool
     {
         // TODO: Implement validateToken() method.
 

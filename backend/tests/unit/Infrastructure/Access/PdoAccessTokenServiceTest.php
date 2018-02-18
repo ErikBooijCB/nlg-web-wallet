@@ -5,7 +5,9 @@ namespace GuldenWallet\Tests\Unit\Backend\Infrastructure\Access;
 
 use DateInterval;
 use GuldenWallet\Backend\Application\Access\AccessToken;
+use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
+use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use GuldenWallet\Backend\Infrastructure\Access\PdoAccessTokenService;
 use PDO;
@@ -15,6 +17,9 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
+/**
+ * @covers \GuldenWallet\Backend\Infrastructure\Access\PdoAccessTokenService
+ */
 class PdoAccessTokenServiceTest extends TestCase
 {
     /** @var PdoAccessTokenService */
@@ -87,5 +92,32 @@ class PdoAccessTokenServiceTest extends TestCase
         $accessToken = $this->accessTokenService->createToken('test@user.com', 'test', new DateInterval('P30D'));
 
         self::assertInstanceOf(AccessToken::class, $accessToken);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_ExpireToken_ShouldThrowException_WhenUnableToExpireToken()
+    {
+        self::expectException(UnableToExpireAccessTokenException::class);
+
+        $token = TokenIdentifier::generate();
+
+        $this->statement->execute()->willThrow(new PDOException);
+
+        $this->accessTokenService->expireToken($token);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_ExpireToken_ShouldReturnTrue_WhenExpirationOfTokenIsSuccessful()
+    {
+        $token = TokenIdentifier::generate();
+
+        $this->statement->bindValue(Argument::type('string'), $token->toString(), PDO::PARAM_STR)->shouldBeCalled();
+        $this->statement->execute()->willReturn()->shouldBeCalled();
+
+        $this->accessTokenService->expireToken($token);
     }
 }

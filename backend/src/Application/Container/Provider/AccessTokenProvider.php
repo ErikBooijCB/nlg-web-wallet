@@ -8,6 +8,9 @@ use GuldenWallet\Backend\Infrastructure\Access\PdoAccessTokenService;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use PDO;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AccessTokenProvider extends AbstractServiceProvider
 {
     /** @var string[] */

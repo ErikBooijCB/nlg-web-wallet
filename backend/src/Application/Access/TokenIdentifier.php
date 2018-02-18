@@ -53,9 +53,11 @@ final class TokenIdentifier
     {
         try {
             $identifier = random_bytes((int)floor(static::HEX_LENGTH / 2));
+        // @codeCoverageIgnoreStart
         } catch (Exception $exception) {
             return static::generate();
         }
+        // @codeCoverageIgnoreEnd */
 
         $tokenIdentifier = new static;
         $tokenIdentifier->identifier = $identifier;

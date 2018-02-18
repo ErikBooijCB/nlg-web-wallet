@@ -7,6 +7,9 @@ use GuldenWallet\Backend\Application\Access\InvalidTokenIdentifierException;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \GuldenWallet\Backend\Application\Access\TokenIdentifier
+ */
 class TokenIdentifierTest extends TestCase
 {
     /**
@@ -70,6 +73,19 @@ class TokenIdentifierTest extends TestCase
         $tokenIdentifierA = TokenIdentifier::fromString($identifierA);
         $tokenIdentifierB = TokenIdentifier::fromString($identifierB);
 
+        self::assertFalse($tokenIdentifierA->equals($tokenIdentifierB));
+    }
+
+    /**
+     * @return void
+     */
+    public function test_Generate_ShouldCreateRandomInstanceOfTokenIdentifier()
+    {
+        $tokenIdentifierA = TokenIdentifier::generate();
+        $tokenIdentifierB = TokenIdentifier::generate();
+
+        self::assertInstanceOf(TokenIdentifier::class, $tokenIdentifierA);
+        self::assertInstanceOf(TokenIdentifier::class, $tokenIdentifierB);
         self::assertFalse($tokenIdentifierA->equals($tokenIdentifierB));
     }
 }

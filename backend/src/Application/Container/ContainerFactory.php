@@ -13,6 +13,9 @@ use League\Container\ReflectionContainer;
 use Psr\Container\ContainerInterface;
 use Slim\Container as SlimContainer;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ContainerFactory
 {
     /**

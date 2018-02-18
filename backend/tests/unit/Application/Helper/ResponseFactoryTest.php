@@ -7,6 +7,9 @@ use GuldenWallet\Backend\Application\Helper\ResponseFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @covers \GuldenWallet\Backend\Application\Helper\ResponseFactory
+ */
 class ResponseFactoryTest extends TestCase
 {
     /**
@@ -37,6 +40,36 @@ class ResponseFactoryTest extends TestCase
         self::assertInstanceOf(ResponseInterface::class, $response);
         self::assertEquals(204, $response->getStatusCode());
     }
+
+    /**
+     * @return void
+     */
+    public function test_SuccessMessage_ShouldReturnResponseWithStatusOkAnd200StatusCode_WhenStatusCodeNotDefined()
+    {
+        $message = 'Yay, success';
+
+        $response = ResponseFactory::successMessage($message);
+
+        $parsedBody = $this->parseResponseBody($response);
+
+        self::assertInstanceOf(ResponseInterface::class, $response);
+        self::assertInternalType('array', $parsedBody);
+        self::assertEquals('ok', $parsedBody['status']);
+        self::assertEquals($message, $parsedBody['message']);
+        self::assertEquals(200, $response->getStatusCode());
+    }
+
+    /**
+     * @return void
+     */
+    public function testSuccessMessage_ShouldReturnResponseWithAlternativeStatusCode_WhenAlternativeStatusCodeIsDefined()
+    {
+        $response = ResponseFactory::successMessage('Yay, success', 204);
+
+        self::assertInstanceOf(ResponseInterface::class, $response);
+        self::assertEquals(204, $response->getStatusCode());
+    }
+
     /**
      * @return void
      */

@@ -8,6 +8,9 @@ use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Infrastructure\Database\PreparableStatement;
 use PDO;
 
+/**
+ * @codeCoverageIgnore
+ */
 class PersistNewTokenStatement implements PreparableStatement
 {
     /** @var TokenIdentifier */

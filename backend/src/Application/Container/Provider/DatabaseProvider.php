@@ -8,6 +8,9 @@ use GuldenWallet\Backend\Application\Helper\Constant\GlobalConstant;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use PDO;
 
+/**
+ * @codeCoverageIgnore
+ */
 class DatabaseProvider extends AbstractServiceProvider
 {
     /** @var string[] */

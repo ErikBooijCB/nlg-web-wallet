@@ -5,6 +5,9 @@ namespace GuldenWallet\Backend\Infrastructure\Access\Statement;
 
 use GuldenWallet\Backend\Infrastructure\Database\PreparableStatement;
 
+/**
+ * @codeCoverageIgnore
+ */
 class FetchCredentialsStatement implements PreparableStatement
 {
     /**

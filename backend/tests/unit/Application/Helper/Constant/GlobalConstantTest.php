@@ -8,6 +8,9 @@ use GuldenWallet\Backend\Application\Helper\Constant\GlobalConstant;
 use GuldenWallet\Backend\Application\Helper\Constant\UndefinedConstantException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \GuldenWallet\Backend\Application\Helper\Constant\GlobalConstant
+ */
 class GlobalConstantTest extends TestCase
 {
     /**

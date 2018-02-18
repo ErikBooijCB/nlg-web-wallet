@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace GuldenWallet\Backend\Application\Access;
 
-/**
- * @codeCoverageIgnore
- */
 class InvalidTokenIdentifierException extends \Exception
 {
     /**

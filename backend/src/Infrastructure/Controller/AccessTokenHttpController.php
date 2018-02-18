@@ -10,7 +10,6 @@ use GuldenWallet\Backend\Application\Access\InvalidTokenIdentifierException;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
-use GuldenWallet\Backend\Application\Access\UserProvidedAccessToken;
 use GuldenWallet\Backend\Application\Helper\ResponseFactory;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use Psr\Http\Message\ResponseInterface;
@@ -37,16 +36,14 @@ class AccessTokenHttpController
     public function delete(ServerRequestInterface $request): ResponseInterface
     {
         try {
-            $token = TokenIdentifier::fromString($request->getAttribute('token'));
-
-            $this->accessTokenService->expireToken(new UserProvidedAccessToken($token));
-
-            return ResponseFactory::successMessage('the provided token has been expired', 204);
+            $this->accessTokenService->expireToken(TokenIdentifier::fromString($request->getAttribute('token', '')));
         } catch (InvalidTokenIdentifierException $exception) {
             return ResponseFactory::failure('the provided token was not a valid access token', 400);
         } catch (UnableToExpireAccessTokenException $exception) {
             return ResponseFactory::failure('unable to expire access token for technical reasons', 500);
         }
+
+        return ResponseFactory::successMessage('the provided token has been expired', 204);
     }
 
     /**

@@ -5,6 +5,9 @@ namespace GuldenWallet\Backend\Application\Access;
 
 use DateTimeInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AccessToken
 {
     /** @var DateTimeInterface */

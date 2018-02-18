@@ -6,6 +6,9 @@ namespace GuldenWallet\Backend\Infrastructure\Access\Statement;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Infrastructure\Database\PreparableStatement;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ExpireAccessTokenStatement implements PreparableStatement
 {
     /** @var TokenIdentifier */
