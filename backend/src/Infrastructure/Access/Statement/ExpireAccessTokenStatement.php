@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace GuldenWallet\Backend\Infrastructure\Access\Statement;
 
-use GuldenWallet\Backend\Domain\Access\TokenIdentifier;
+use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Infrastructure\Database\PreparableStatement;
 
 class ExpireAccessTokenStatement implements PreparableStatement

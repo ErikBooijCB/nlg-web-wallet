@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace GuldenWallet\Tests\Unit\Backend\Domain\Access;
 
-use GuldenWallet\Backend\Domain\Access\InvalidTokenIdentifierException;
-use GuldenWallet\Backend\Domain\Access\TokenIdentifier;
+use GuldenWallet\Backend\Application\Access\InvalidTokenIdentifierException;
+use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use PHPUnit\Framework\TestCase;
 
 class TokenIdentifierTest extends TestCase

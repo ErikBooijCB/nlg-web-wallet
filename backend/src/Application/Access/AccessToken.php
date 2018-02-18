@@ -1,30 +1,30 @@
 <?php
 declare(strict_types=1);
 
-namespace GuldenWallet\Backend\Domain\Access;
+namespace GuldenWallet\Backend\Application\Access;
 
 use DateTimeInterface;
 
-class PersistedAccessToken
+class AccessToken
 {
     /** @var DateTimeInterface */
     private $expires;
 
-    /** @var PersistedRefreshToken */
+    /** @var TokenIdentifier */
     private $refreshToken;
 
     /** @var TokenIdentifier */
     private $tokenIdentifier;
 
     /**
-     * @param TokenIdentifier       $tokenIdentifier
-     * @param DateTimeInterface     $expires
-     * @param PersistedRefreshToken $refreshToken
+     * @param TokenIdentifier   $tokenIdentifier
+     * @param DateTimeInterface $expires
+     * @param TokenIdentifier   $refreshToken
      */
     public function __construct(
         TokenIdentifier $tokenIdentifier,
         DateTimeInterface $expires,
-        PersistedRefreshToken $refreshToken
+        TokenIdentifier $refreshToken
     ) {
         $this->tokenIdentifier = $tokenIdentifier;
         $this->expires = $expires;
@@ -40,9 +40,9 @@ class PersistedAccessToken
     }
 
     /**
-     * @return PersistedRefreshToken
+     * @return TokenIdentifier
      */
-    public function getRefreshToken(): PersistedRefreshToken
+    public function getRefreshToken(): TokenIdentifier
     {
         return $this->refreshToken;
     }

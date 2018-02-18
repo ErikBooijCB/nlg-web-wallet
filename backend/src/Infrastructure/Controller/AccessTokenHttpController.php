@@ -6,13 +6,13 @@ namespace GuldenWallet\Backend\Infrastructure\Controller;
 use DateInterval;
 use DateTime;
 use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
+use GuldenWallet\Backend\Application\Access\InvalidTokenIdentifierException;
+use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UserProvidedAccessToken;
 use GuldenWallet\Backend\Application\Helper\ResponseFactory;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
-use GuldenWallet\Backend\Domain\Access\InvalidTokenIdentifierException;
-use GuldenWallet\Backend\Domain\Access\TokenIdentifier;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -27,6 +27,26 @@ class AccessTokenHttpController
     public function __construct(AccessTokenServiceInterface $accessTokenService)
     {
         $this->accessTokenService = $accessTokenService;
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     *
+     * @return ResponseInterface
+     */
+    public function delete(ServerRequestInterface $request): ResponseInterface
+    {
+        try {
+            $token = TokenIdentifier::fromString($request->getAttribute('token'));
+
+            $this->accessTokenService->expireToken(new UserProvidedAccessToken($token));
+
+            return ResponseFactory::successMessage('the provided token has been expired', 204);
+        } catch (InvalidTokenIdentifierException $exception) {
+            return ResponseFactory::failure('the provided token was not a valid access token', 400);
+        } catch (UnableToExpireAccessTokenException $exception) {
+            return ResponseFactory::failure('unable to expire access token for technical reasons', 500);
+        }
     }
 
     /**
@@ -57,28 +77,8 @@ class AccessTokenHttpController
         return ResponseFactory::success([
             'accessToken'  => $accessToken->getTokenIdentifier()->toString(),
             'expires'      => $accessToken->getExpires()->format(DateTime::ATOM),
-            'refreshToken' => $accessToken->getRefreshToken()->getTokenIdentifier()->toString(),
+            'refreshToken' => $accessToken->getRefreshToken()->toString(),
         ], 201);
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
-     */
-    public function delete(ServerRequestInterface $request): ResponseInterface
-    {
-        try {
-            $token = TokenIdentifier::fromString($request->getAttribute('token'));
-
-            $this->accessTokenService->expireToken(new UserProvidedAccessToken($token));
-
-            return ResponseFactory::successMessage('the provided token has been expired', 204);
-        } catch (InvalidTokenIdentifierException $exception) {
-            return ResponseFactory::failure('the provided token was not a valid access token', 400);
-        } catch (UnableToExpireAccessTokenException $exception) {
-            return ResponseFactory::failure('unable to expire access token for technical reasons', 500);
-        }
     }
 
     /**

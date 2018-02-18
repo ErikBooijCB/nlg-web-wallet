@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace GuldenWallet\Backend\Domain\Access;
+namespace GuldenWallet\Backend\Application\Access;
 
 use Exception;
 
@@ -12,6 +12,16 @@ final class TokenIdentifier
 
     /** @var string */
     private $identifier = '';
+
+    /**
+     * @param TokenIdentifier $tokenIdentifier
+     *
+     * @return bool
+     */
+    public function equals(self $tokenIdentifier): bool
+    {
+        return $this->identifier === $tokenIdentifier->identifier;
+    }
 
     /**
      * @param string $tokenIdentifier
@@ -51,16 +61,6 @@ final class TokenIdentifier
         $tokenIdentifier->identifier = $identifier;
 
         return $tokenIdentifier;
-    }
-
-    /**
-     * @param TokenIdentifier $tokenIdentifier
-     *
-     * @return bool
-     */
-    public function equals(self $tokenIdentifier): bool
-    {
-        return $this->identifier === $tokenIdentifier->identifier;
     }
 
     /**

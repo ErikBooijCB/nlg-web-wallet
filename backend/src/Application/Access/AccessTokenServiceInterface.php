@@ -5,7 +5,6 @@ namespace GuldenWallet\Backend\Application\Access;
 
 use DateInterval;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
-use GuldenWallet\Backend\Domain\Access\PersistedAccessToken;
 
 interface AccessTokenServiceInterface
 {
@@ -18,7 +17,7 @@ interface AccessTokenServiceInterface
      * @throws InvalidCredentialsException
      * @throws UnableToCreateAccessTokenException
      */
-    public function createToken(string $emailAddress, string $password, DateInterval $validity): PersistedAccessToken;
+    public function createToken(string $emailAddress, string $password, DateInterval $validity): AccessToken;
 
     /**
      * @param UserProvidedAccessToken $accessToken
@@ -31,9 +30,9 @@ interface AccessTokenServiceInterface
     /**
      * @param UserProvidedRefreshToken $refreshToken
      *
-     * @return PersistedAccessToken
+     * @return AccessToken
      */
-    public function refreshToken(UserProvidedRefreshToken $refreshToken): PersistedAccessToken;
+    public function refreshToken(UserProvidedRefreshToken $refreshToken): AccessToken;
 
     /**
      * @param UserProvidedAccessToken $accessToken

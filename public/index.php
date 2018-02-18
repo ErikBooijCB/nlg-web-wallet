@@ -9,6 +9,8 @@ use GuldenWallet\Backend\Application\Middleware\NotFoundHandlingMiddleware;
 use GuldenWallet\Backend\Infrastructure\Controller\AccessTokenHttpController;
 use Slim\App;
 
+date_default_timezone_set('UTC');
+
 require __DIR__ . '/../vendor/autoload.php';
 
 GlobalConstant::write(Constant::APP_ROOT, realpath(__DIR__ . '/../'));

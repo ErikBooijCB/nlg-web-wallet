@@ -6,21 +6,19 @@ namespace GuldenWallet\Backend\Infrastructure\Access;
 use DateInterval;
 use DateTimeImmutable;
 use Exception;
+use GuldenWallet\Backend\Application\Access\AccessToken;
 use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
+use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UserProvidedAccessToken;
 use GuldenWallet\Backend\Application\Access\UserProvidedRefreshToken;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
-use GuldenWallet\Backend\Domain\Access\PersistedAccessToken;
-use GuldenWallet\Backend\Domain\Access\PersistedRefreshToken;
-use GuldenWallet\Backend\Domain\Access\TokenIdentifier;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\ExpireAccessTokenStatement;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\FetchCredentialsStatement;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\PersistNewTokenStatement;
 use GuldenWallet\Backend\Infrastructure\Database\Prepare;
 use PDO;
-use PDOException;
 
 class PdoAccessTokenService implements AccessTokenServiceInterface
 {
@@ -38,7 +36,7 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
     /**
      * @inheritdoc
      */
-    public function createToken(string $emailAddress, string $password, DateInterval $validity): PersistedAccessToken
+    public function createToken(string $emailAddress, string $password, DateInterval $validity): AccessToken
     {
         if (!$this->verifyCredentials($emailAddress, $password)) {
             throw new InvalidCredentialsException;
@@ -57,13 +55,7 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
 
             $statement->execute();
 
-            return new PersistedAccessToken(
-                $accessToken,
-                $expiration,
-                new PersistedRefreshToken(
-                    $refreshToken
-                )
-            );
+            return new AccessToken($accessToken, $expiration, $refreshToken);
         } catch (Exception $exception) {
             throw UnableToCreateAccessTokenException::fromPrevious($exception);
         }
@@ -90,16 +82,14 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
     /**
      * @inheritdoc
      */
-    public function refreshToken(UserProvidedRefreshToken $refreshToken): PersistedAccessToken
+    public function refreshToken(UserProvidedRefreshToken $refreshToken): AccessToken
     {
         // TODO: Implement refreshToken() method.
 
-        return new PersistedAccessToken(
+        return new AccessToken(
             TokenIdentifier::generate(),
             new DateTimeImmutable,
-            new PersistedRefreshToken(
-                TokenIdentifier::generate()
-            )
+            TokenIdentifier::generate()
         );
     }
 
