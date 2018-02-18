@@ -3,3 +3,4 @@ node_modules
 vendor
 etc/secrets.php
 .ENV
+build/logs

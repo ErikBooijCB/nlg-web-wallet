@@ -13,7 +13,7 @@
         verbose="true">
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
+            <directory suffix=".php">backend/src</directory>
             <exclude>
                 <directory suffix="Interface.php">src</directory>
             </exclude>
@@ -24,4 +24,7 @@
             <directory>backend/tests</directory>
         </testsuite>
     </testsuites>
+    <logging>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
 </phpunit>
