@@ -4,14 +4,13 @@ declare(strict_types=1);
 namespace GuldenWallet\Tests\Unit\Backend\Infrastructure\Access;
 
 use DateInterval;
+use GuldenWallet\Backend\Application\Access\AccessToken;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
-use GuldenWallet\Backend\Domain\Access\PersistedAccessToken;
 use GuldenWallet\Backend\Infrastructure\Access\PdoAccessTokenService;
 use PDO;
 use PDOException;
 use PDOStatement;
-use PhpParser\Node\Arg;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -87,6 +86,6 @@ class PdoAccessTokenServiceTest extends TestCase
     {
         $accessToken = $this->accessTokenService->createToken('test@user.com', 'test', new DateInterval('P30D'));
 
-        self::assertInstanceOf(PersistedAccessToken::class, $accessToken);
+        self::assertInstanceOf(AccessToken::class, $accessToken);
     }
 }

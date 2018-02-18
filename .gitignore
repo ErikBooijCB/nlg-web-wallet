@@ -2,3 +2,4 @@ secret
 node_modules
 vendor
 etc/secrets.php
+.ENV
