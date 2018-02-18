@@ -8,14 +8,19 @@ use DateTimeImmutable;
 use Exception;
 use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
+use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UserProvidedAccessToken;
 use GuldenWallet\Backend\Application\Access\UserProvidedRefreshToken;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use GuldenWallet\Backend\Domain\Access\PersistedAccessToken;
 use GuldenWallet\Backend\Domain\Access\PersistedRefreshToken;
 use GuldenWallet\Backend\Domain\Access\TokenIdentifier;
+use GuldenWallet\Backend\Infrastructure\Access\Statement\ExpireAccessTokenStatement;
+use GuldenWallet\Backend\Infrastructure\Access\Statement\FetchCredentialsStatement;
+use GuldenWallet\Backend\Infrastructure\Access\Statement\PersistNewTokenStatement;
 use GuldenWallet\Backend\Infrastructure\Database\Prepare;
 use PDO;
+use PDOException;
 
 class PdoAccessTokenService implements AccessTokenServiceInterface
 {
@@ -66,21 +71,24 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
 
 
     /**
-     * @param UserProvidedAccessToken $accessToken
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function expireToken(UserProvidedAccessToken $accessToken): bool
+    public function expireToken(UserProvidedAccessToken $accessToken)
     {
-        // TODO: Implement expireToken() method.
+        try {
+            $statement = Prepare::statement(
+                $this->pdo,
+                new ExpireAccessTokenStatement($accessToken->getTokenIdentifier())
+            );
 
-        return false;
+            $statement->execute();
+        } catch (Exception $exception) {
+            throw UnableToExpireAccessTokenException::fromPrevious($exception);
+        }
     }
 
     /**
-     * @param UserProvidedRefreshToken $refreshToken
-     *
-     * @return PersistedAccessToken
+     * @inheritdoc
      */
     public function refreshToken(UserProvidedRefreshToken $refreshToken): PersistedAccessToken
     {
@@ -96,9 +104,7 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
     }
 
     /**
-     * @param UserProvidedAccessToken $accessToken
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function validateToken(UserProvidedAccessToken $accessToken): bool
     {
