@@ -5,6 +5,10 @@ php:
   - 7.1
   - 7.2
 
+branches:
+  only:
+  - master
+
 before_script:
   - travis_retry composer install --no-interaction
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
