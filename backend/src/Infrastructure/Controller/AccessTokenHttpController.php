@@ -32,20 +32,16 @@ class AccessTokenHttpController
      */
     public function post(ServerRequestInterface $request): ResponseInterface
     {
+        $requestBody = (array)$request->getParsedBody();
+
+        if (($checkResult = $this->checkPrerequisitesForCreatingToken($requestBody)) instanceof ResponseInterface) {
+            return $checkResult;
+        }
+
         try {
-            $requestBody = (array)$request->getParsedBody();
-
-            if (empty($email = $requestBody['email'] ?? '')) {
-                return ResponseFactory::failure('e-mail address missing from request', 400);
-            }
-
-            if (empty($password = $requestBody['password'] ?? '')) {
-                return ResponseFactory::failure('password missing from request', 400);
-            }
-
             $accessToken = $this->accessTokenService->createToken(
-                $email,
-                $password,
+                $requestBody['email'],
+                $requestBody['password'],
                 new DateInterval('P30D')
             );
         } catch (InvalidCredentialsException $exception) {
@@ -73,5 +69,23 @@ class AccessTokenHttpController
         }
 
         return ResponseFactory::success([]);
+    }
+
+    /**
+     * @param array $requestBody
+     *
+     * @return ResponseInterface|null
+     */
+    private function checkPrerequisitesForCreatingToken(array $requestBody)
+    {
+        if (empty($requestBody['email'] ?? '')) {
+            return ResponseFactory::failure('e-mail address missing from request', 400);
+        }
+
+        if (empty($password = $requestBody['password'] ?? '')) {
+            return ResponseFactory::failure('password missing from request', 400);
+        }
+
+        return null;
     }
 }
