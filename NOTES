@@ -1,0 +1,3 @@
+- NO TLS
+  - Difficult to set up with a self signed cert on client machines
+  - Might be possible to do some Letsencrypt stuff if user points a publicly accessible domain name to it

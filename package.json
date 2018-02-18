@@ -1,0 +1,10 @@
+{
+  "name": "gulden-wallet",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
+  "dependencies": {
+    "concurrently": "^3.5.1"
+  }
+}
