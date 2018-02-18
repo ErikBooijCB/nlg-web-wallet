@@ -1,9 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace GuldenWallet\Backend\Infrastructure\Access;
+namespace GuldenWallet\Backend\Infrastructure\Access\Statement;
 
-use DateTime;
 use DateTimeInterface;
 use GuldenWallet\Backend\Domain\Access\TokenIdentifier;
 use GuldenWallet\Backend\Infrastructure\Database\PreparableStatement;

@@ -23,9 +23,10 @@ interface AccessTokenServiceInterface
     /**
      * @param UserProvidedAccessToken $accessToken
      *
-     * @return bool
+     * @return void
+     * @throws UnableToExpireAccessTokenException
      */
-    public function expireToken(UserProvidedAccessToken $accessToken): bool;
+    public function expireToken(UserProvidedAccessToken $accessToken);
 
     /**
      * @param UserProvidedRefreshToken $refreshToken

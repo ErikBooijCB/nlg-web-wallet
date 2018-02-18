@@ -17,4 +17,12 @@ class UserProvidedAccessToken
     {
         $this->tokenIdentifier = $tokenIdentifier;
     }
+
+    /**
+     * @return TokenIdentifier
+     */
+    public function getTokenIdentifier(): TokenIdentifier
+    {
+        return $this->tokenIdentifier;
+    }
 }
