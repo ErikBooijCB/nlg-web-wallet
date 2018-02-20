@@ -2,6 +2,6 @@ actor: ApiTester
 modules:
     enabled:
         - REST:
-            url: https://gulden-wallet.dev/api
+            url: http://gulden-wallet.dev.zone/api
             depends: PhpBrowser
             part: Json

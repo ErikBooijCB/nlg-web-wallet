@@ -16,6 +16,9 @@
     "codeception/codeception": "^2.3"
   },
   "scripts": {
+    "server-restart": ["@server-stop", "@server-start"],
+    "server-start": "docker-compose up -d",
+    "server-stop": "docker-compose down",
     "test": ["@test-static", "@test-unit", "@test-acceptance"],
     "test-acceptance": "./vendor/bin/codecept run api",
     "test-coverage": "phpunit --coverage-html=coverage",

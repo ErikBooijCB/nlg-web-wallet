@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker run -it --rm --volume="$(pwd):/var/www/html" -w="/var/www/html" --network=guldenwallet_default gulden-wallet-dev $@

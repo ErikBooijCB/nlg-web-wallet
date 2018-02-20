@@ -22,7 +22,7 @@ environments:
         host: 127.0.0.1
         name: gulden_wallet
         user: gulden_web_migration
-        pass: VqvHzTCgD44oM8TZNhxAs2DNJyEAp7icLGcC4bDqWccTqJKhF2vbUsVFid4r3Xm6
+        pass: migration_password
         port: 3306
         charset: utf8
 
