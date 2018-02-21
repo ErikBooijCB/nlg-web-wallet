@@ -4,11 +4,14 @@ declare(strict_types=1);
 namespace GuldenWallet\Tests\Unit\Backend\Application\Middleware;
 
 use Exception;
+use GuldenWallet\Backend\Application\Helper\Constant\Constant;
+use GuldenWallet\Backend\Application\Helper\Constant\GlobalConstant;
 use GuldenWallet\Backend\Application\Middleware\ExceptionHandlingMiddleware;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Finder\Glob;
 use Zend\Diactoros\Response\JsonResponse;
 
 /**
@@ -66,12 +69,7 @@ class ExceptionHandlingMiddlewareTest extends TestCase
             throw new Exception;
         };
 
-        $response = call_user_func(
-            $this->middleware,
-            $this->request->reveal(),
-            $this->response->reveal(),
-            $next
-        );
+        $response = call_user_func($this->middleware, $this->request->reveal(), $this->response->reveal(), $next);
 
         $responseData = json_decode($response->getBody()->getContents(), true);
 
@@ -79,5 +77,24 @@ class ExceptionHandlingMiddlewareTest extends TestCase
         self::assertEquals(500, $response->getStatusCode());
         self::assertEquals('error', $responseData['status']);
         self::assertArrayHasKey('message', $responseData);
+        self::assertArrayNotHasKey('error', $responseData);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_Invoke_ShouldIncludeErrorMessage_WhenRunOnDevelopment()
+    {
+        GlobalConstant::write(Constant::ENVIRONMENT, 'development');
+
+        $next = function () {
+            throw new Exception;
+        };
+
+        $response = call_user_func($this->middleware, $this->request->reveal(), $this->response->reveal(), $next);
+
+        $responseData = json_decode($response->getBody()->getContents(), true);
+
+        self::assertArrayHasKey('error', $responseData);
     }
 }

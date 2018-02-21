@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace GuldenWallet\Backend\Application\Middleware;
 
+use GuldenWallet\Backend\Application\Helper\Constant\Constant;
+use GuldenWallet\Backend\Application\Helper\Constant\GlobalConstant;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
@@ -25,10 +27,16 @@ class ExceptionHandlingMiddleware
         try {
             return $next($request, $response);
         } catch (Throwable $exception) {
-            return new JsonResponse([
+            $responseData = [
                 'status' => 'error',
                 'message' => 'An error has occurred while processing this request'
-            ], 500);
+            ];
+
+            if (GlobalConstant::readUnsafe(Constant::ENVIRONMENT) === 'development') {
+                $responseData['error'] = $exception->getMessage();
+            }
+
+            return new JsonResponse($responseData, 500);
         }
     }
 }
