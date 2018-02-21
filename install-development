@@ -1,6 +1,25 @@
 #!/bin/bash
 
-docker-compose up -d && \
-    docker exec gulden-wallet-mysql 'mysql -u root -ptesttest < /tmp/pre-migration.sql'
+BLUE='\033[0;36m'
+NC='\033[0m' # No Color
 
-docker exec gulden-wallet-php ./var/www/html/vendor/bin/composer install
+printf "\n === ${BLUE}Stopping and recreating Docker containers${NC} === \n\n"
+docker-compose down -v
+docker-compose -p guldenwallet up -d
+
+printf "\n === ${BLUE}Composer Install${NC} === \n\n"
+./gw composer install
+
+sleep 5
+
+printf "\n === ${BLUE}Running Docker Containers${NC} === \n\n"
+docker-compose ps
+
+printf "\n === ${BLUE}Preparing database for migration${NC} === \n\n"
+cat docker/pre-migration.sql | ./gw mysql -hmysql -uroot -ptesttest
+
+printf "\n === ${BLUE}Migrating database${NC} === \n\n"
+./gw ./vendor/bin/phinx migrate
+
+printf "\n === ${BLUE}Provisioning sample data${NC} === \n\n"
+cat docker/sample-data/001-user-details.sql | ./gw mysql -hmysql -uroot -ptesttest gulden_wallet

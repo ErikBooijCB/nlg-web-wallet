@@ -19,9 +19,9 @@ environments:
 
     development:
         adapter: mysql
-        host: 127.0.0.1
+        host: mysql
         name: gulden_wallet
-        user: gulden_web_migration
+        user: migration_user
         pass: migration_password
         port: 3306
         charset: utf8

@@ -12,8 +12,8 @@
     "phpunit/phpunit": "^6.0",
     "vimeo/psalm": "^0.3.93",
     "zendframework/zend-diactoros": "^1.7",
-    "robmorgan/phinx": "^0.9.2",
-    "codeception/codeception": "^2.3"
+    "codeception/codeception": "^2.3",
+    "robmorgan/phinx": "^0.9.2"
   },
   "scripts": {
     "server-restart": ["@server-stop", "@server-start"],
@@ -22,6 +22,7 @@
     "test": ["@test-static", "@test-unit", "@test-acceptance"],
     "test-acceptance": "./vendor/bin/codecept run api",
     "test-coverage": "phpunit --coverage-html=coverage",
+    "test-ci": ["phpunit --coverage-clover=build/logs/clover.xml", "@test-static", "@test-acceptance"],
     "test-static": "psalm",
     "test-unit": "phpunit"
   }

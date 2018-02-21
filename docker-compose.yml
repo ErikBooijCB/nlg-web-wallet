@@ -2,7 +2,7 @@ version: '3'
 services:
   web:
     image: nginx:1.13
-    container_name: gulden_wallet_nginx
+    container_name: gulden-wallet-nginx
     volumes:
       - "./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf"
       - "./docker/nginx/default.template.conf:/etc/nginx/conf.d/default.template"
@@ -25,15 +25,13 @@ services:
     container_name: gulden-wallet-mysql
     restart: always
     environment:
-        - MYSQL_DATABASE=gulden_wallet
-        - MYSQL_ROOT_PASSWORD=testtest
-        - MYSQL_USER=gulden_web_user
-        - MYSQL_PASSWORD=test_password
-        - MYSQL_ROOT_HOST=%
+      - MYSQL_DATABASE=gulden_wallet
+      - MYSQL_ROOT_PASSWORD=testtest
+      - MYSQL_USER=gulden_web_user
+      - MYSQL_PASSWORD=test_password
+      - MYSQL_ROOT_HOST=%
     ports:
-        - "3306:3306"
-    volumes:
-        - "./docker:/tmp"
+      - "3306:3306"
   development:
     build: docker/development
     command: /bin/true
