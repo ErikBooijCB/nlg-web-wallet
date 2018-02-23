@@ -25,15 +25,10 @@ services:
     container_name: gulden-wallet-mysql
     restart: always
     environment:
-      - MYSQL_DATABASE=gulden_wallet
-      - MYSQL_ROOT_PASSWORD=testtest
-      - MYSQL_USER=gulden_web_user
-      - MYSQL_PASSWORD=test_password
-      - MYSQL_ROOT_HOST=%
+      MYSQL_DATABASE: "gulden_wallet"
+      MYSQL_ROOT_PASSWORD: "testtest"
+      MYSQL_USER: "gulden_web_user"
+      MYSQL_PASSWORD: "test_password"
+      MYSQL_ROOT_HOST: "%"
     ports:
       - "3306:3306"
-  development:
-    build: docker/development
-    command: /bin/true
-    container_name: gulden-wallet-dev
-    image: gulden-wallet-dev

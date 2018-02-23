@@ -19,7 +19,7 @@ environments:
 
     development:
         adapter: mysql
-        host: mysql
+        host: 127.0.0.1
         name: gulden_wallet
         user: migration_user
         pass: migration_password

@@ -1,25 +1,34 @@
 #!/bin/bash
 
-BLUE='\033[0;36m'
+BLUE='\033[1;36m'
+GREEN='\033[1;32m'
 NC='\033[0m' # No Color
 
 printf "\n === ${BLUE}Stopping and recreating Docker containers${NC} === \n\n"
 docker-compose down -v
-docker-compose -p guldenwallet up -d
+docker-compose up -d
 
 printf "\n === ${BLUE}Composer Install${NC} === \n\n"
-./gw composer install
+composer install
 
-sleep 5
+printf "\n === ${BLUE}Wait for database container to become available${NC} === \n\n"
+while ! mysqladmin ping -h127.0.0.1 --silent; do
+    echo 'Waiting...'
+    sleep 1
+done
+printf "\n${GREEN}Done, database container is ready!${NC}\n"
 
 printf "\n === ${BLUE}Running Docker Containers${NC} === \n\n"
 docker-compose ps
 
 printf "\n === ${BLUE}Preparing database for migration${NC} === \n\n"
-cat docker/pre-migration.sql | ./gw mysql -hmysql -uroot -ptesttest
+cat docker/pre-migration.sql | mysql -h127.0.0.1 -uroot -ptesttest --silent
+printf "\n${GREEN}Done, database is prepared!${NC}\n"
 
 printf "\n === ${BLUE}Migrating database${NC} === \n\n"
-./gw ./vendor/bin/phinx migrate
+./vendor/bin/phinx migrate
+printf "\n${GREEN}Done, database is migrated!${NC}\n"
 
 printf "\n === ${BLUE}Provisioning sample data${NC} === \n\n"
-cat docker/sample-data/001-user-details.sql | ./gw mysql -hmysql -uroot -ptesttest gulden_wallet
+./vendor/bin/phinx seed:run
+printf "\n${GREEN}Done, database has been provisioned with sample data!${NC}\n"
