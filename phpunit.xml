@@ -14,16 +14,16 @@
         verbose="true">
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">backend/src</directory>
+            <directory suffix=".php">src/backend</directory>
             <exclude>
-                <directory suffix="Interface.php">backend/src</directory>
-                <directory suffix="Exception.php">backend/src</directory>
+                <directory suffix="Interface.php">src/backend</directory>
+                <directory suffix="Exception.php">src/backend</directory>
             </exclude>
         </whitelist>
     </filter>
     <testsuites>
         <testsuite name="All">
-            <directory>backend/tests</directory>
+            <directory>tests/unit/backend</directory>
         </testsuite>
     </testsuites>
 </phpunit>

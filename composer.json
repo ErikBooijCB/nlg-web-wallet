@@ -1,7 +1,7 @@
 {
   "autoload": {
     "psr-4": {
-      "GuldenWallet\\Backend\\": "backend/src"
+      "GuldenWallet\\Backend\\": "src/backend"
     }
   },
   "require": {
