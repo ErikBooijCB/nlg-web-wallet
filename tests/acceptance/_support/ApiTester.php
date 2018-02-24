@@ -1,7 +1,5 @@
 <?php
 
-include __DIR__ . '/StepDefinitions/AccessTokenLifecycle.php';
-
 /**
  * Inherited Methods
  * @method void wantToTest($text)
@@ -20,7 +18,7 @@ include __DIR__ . '/StepDefinitions/AccessTokenLifecycle.php';
 class ApiTester extends \Codeception\Actor
 {
     use _generated\ApiTesterActions;
-    use AccessTokenLifeCycle;
+    use Helper\StepDefinitions\AccessTokenLifecycle;
 
     /**
      * @Then the response should be JSON with a :statusCode status code
