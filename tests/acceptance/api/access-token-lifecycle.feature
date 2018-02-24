@@ -24,3 +24,14 @@ Feature: access-token-lifecycle
       | { "email": "john@doe.com" } |
       | { "password": "testtest" }  |
       | { }                         |
+
+  Scenario: Retrieve details for a valid token
+    Given I have obtained an access token
+    When I fetch the token details
+    Then the response should be JSON with a 200 status code
+    And it should expose the token expiration
+
+  Scenario: Retrieve details for an invalid token
+    Given I do not have a valid token
+    When I fetch the token details
+    Then the response should be JSON with a 404 status code

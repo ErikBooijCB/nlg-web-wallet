@@ -5,15 +5,19 @@ namespace GuldenWallet\Tests\Unit\Backend\Infrastructure\Controller;
 
 use DateTimeImmutable;
 use GuldenWallet\Backend\Application\Access\AccessToken;
+use GuldenWallet\Backend\Application\Access\AccessTokenNotFoundException;
 use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
+use GuldenWallet\Backend\Application\Access\UnableToRetrieveAccessTokenException;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use GuldenWallet\Backend\Infrastructure\Controller\AccessTokenHttpController;
+use GuldenWallet\Tests\Fixtures\Access\AccessTokenFixture;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TheSeer\Tokenizer\TokenCollectionException;
 
@@ -176,5 +180,74 @@ class AccessTokenHttpControllerTest extends TestCase
         $response = $this->controller->post($this->request->reveal());
 
         self::assertEquals(400, $response->getStatusCode());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_Get_ShouldReturnAccessToken_WhenItExists()
+    {
+        $accessToken = AccessTokenFixture::accessToken();
+
+        $this->request->getAttribute('token', '')->willReturn(AccessTokenFixture::tokenIdentifier()->toString());
+        $this->accessTokenService->getAccessTokenByIdentifier(AccessTokenFixture::tokenIdentifier())
+            ->willReturn($accessToken);
+
+        $response = $this->controller->get($this->request->reveal());
+        $responseData = json_decode($response->getBody()->getContents(), true);
+
+        self::assertInstanceOf(ResponseInterface::class, $response);
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('ok', $responseData['status']);
+        self::assertEquals('2018-10-12T12:34:56+00:00', $responseData['data']['expires']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_Get_ShouldReturn404_WhenTokenDoesNotExist()
+    {
+        $this->request->getAttribute('token', '')->willReturn(AccessTokenFixture::tokenIdentifier()->toString());
+        $this->accessTokenService->getAccessTokenByIdentifier(AccessTokenFixture::tokenIdentifier())
+            ->willThrow(new AccessTokenNotFoundException);
+
+        $response = $this->controller->get($this->request->reveal());
+        $responseData = json_decode($response->getBody()->getContents(), true);
+
+        self::assertInstanceOf(ResponseInterface::class, $response);
+        self::assertEquals(404, $response->getStatusCode());
+        self::assertEquals('error', $responseData['status']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_Get_ShouldReturn500_WhenTokenDoesNotExist()
+    {
+        $this->request->getAttribute('token', '')->willReturn(AccessTokenFixture::tokenIdentifier()->toString());
+        $this->accessTokenService->getAccessTokenByIdentifier(AccessTokenFixture::tokenIdentifier())
+            ->willThrow(new UnableToRetrieveAccessTokenException());
+
+        $response = $this->controller->get($this->request->reveal());
+        $responseData = json_decode($response->getBody()->getContents(), true);
+
+        self::assertInstanceOf(ResponseInterface::class, $response);
+        self::assertEquals(500, $response->getStatusCode());
+        self::assertEquals('error', $responseData['status']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_Get_ShouldReturn400_WhenTokenWithInvalidFormatIsPassed()
+    {
+        $this->request->getAttribute('token', '')->willReturn('some-wrong-identifier');
+
+        $response = $this->controller->get($this->request->reveal());
+        $responseData = json_decode($response->getBody()->getContents(), true);
+
+        self::assertInstanceOf(ResponseInterface::class, $response);
+        self::assertEquals(400, $response->getStatusCode());
+        self::assertEquals('error', $responseData['status']);
     }
 }

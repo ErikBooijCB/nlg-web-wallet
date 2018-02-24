@@ -5,11 +5,13 @@ namespace GuldenWallet\Backend\Infrastructure\Controller;
 
 use DateInterval;
 use DateTime;
+use GuldenWallet\Backend\Application\Access\AccessTokenNotFoundException;
 use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
 use GuldenWallet\Backend\Application\Access\InvalidTokenIdentifierException;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
+use GuldenWallet\Backend\Application\Access\UnableToRetrieveAccessTokenException;
 use GuldenWallet\Backend\Application\Helper\ResponseFactory;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use Psr\Http\Message\ResponseInterface;
@@ -51,6 +53,30 @@ class AccessTokenHttpController
      *
      * @return ResponseInterface
      */
+    public function get(ServerRequestInterface $request): ResponseInterface
+    {
+        try {
+            $accessTokenIdentifier = TokenIdentifier::fromString($request->getAttribute('token', ''));
+
+            $accessToken = $this->accessTokenService->getAccessTokenByIdentifier($accessTokenIdentifier);
+        } catch (InvalidTokenIdentifierException $exception) {
+            return ResponseFactory::failure('the provided token was not a valid access token', 400);
+        } catch (UnableToRetrieveAccessTokenException $exception) {
+            return ResponseFactory::failure('the access token could not be retrieved', 500);
+        } catch (AccessTokenNotFoundException $exception) {
+            return ResponseFactory::failure('the provided token does not exist', 404);
+        }
+
+        return ResponseFactory::success([
+            'expires' => $accessToken->getExpires()->format(DateTime::ATOM),
+        ]);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     *
+     * @return ResponseInterface
+     */
     public function post(ServerRequestInterface $request): ResponseInterface
     {
         $requestBody = (array)$request->getParsedBody();
@@ -74,7 +100,7 @@ class AccessTokenHttpController
         return ResponseFactory::success([
             'accessToken'  => $accessToken->getTokenIdentifier()->toString(),
             'expires'      => $accessToken->getExpires()->format(DateTime::ATOM),
-            'refreshToken' => $accessToken->getRefreshToken()->toString(),
+            'refreshToken' => $accessToken->getRefreshTokenIdentifier()->toString(),
         ], 201);
     }
 

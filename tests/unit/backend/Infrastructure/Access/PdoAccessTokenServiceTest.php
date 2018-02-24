@@ -7,9 +7,11 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 use GuldenWallet\Backend\Application\Access\AccessToken;
+use GuldenWallet\Backend\Application\Access\AccessTokenNotFoundException;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
+use GuldenWallet\Backend\Application\Access\UnableToRetrieveAccessTokenException;
 use GuldenWallet\Backend\Application\Helper\SystemClock;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use GuldenWallet\Backend\Infrastructure\Access\PdoAccessTokenService;
@@ -35,9 +37,6 @@ class PdoAccessTokenServiceTest extends TestCase
     /** @var PDOStatement|ObjectProphecy */
     private $statement;
 
-    /** @var SystemClock|ObjectProphecy */
-    private $systemClock;
-
     /**
      * @return void
      */
@@ -61,9 +60,7 @@ class PdoAccessTokenServiceTest extends TestCase
         $this->pdo = self::prophesize(PDO::class);
         $this->pdo->prepare(Argument::type('string'))->willReturn($this->statement);
 
-        $this->systemClock = self::prophesize(SystemClock::class);
-
-        $this->accessTokenService = new PdoAccessTokenService($this->pdo->reveal(), $this->systemClock->reveal());
+        $this->accessTokenService = new PdoAccessTokenService($this->pdo->reveal());
     }
 
 
@@ -133,59 +130,68 @@ class PdoAccessTokenServiceTest extends TestCase
     /**
      * @return void
      */
-    public function test_ValidateToken_ShouldReturnFalse_WhenTokenHasExpired()
+    public function test_getAccessTokenByIdentifier_ShouldThrowSpecificException_WhenIdentifierIsInvalid()
     {
+        self::expectException(UnableToRetrieveAccessTokenException::class);
+
         $accessToken = AccessTokenFixture::tokenIdentifier();
 
-        $this->systemClock->getCurrentDateAndTime()->willReturn(new DateTimeImmutable('2018-02-24 13:58:42'));
         $this->statement->fetch()->willReturn($this->accessTokenFetchResult(
             $accessToken->toString(),
             new DateTimeImmutable('2018-02-20 09:11:27'),
-            AccessTokenFixture::randomTokenIdentifier()->toString()
+            'wrong-identifier'
         ));
 
-        self::assertFalse($this->accessTokenService->validateToken($accessToken));
+        $this->accessTokenService->getAccessTokenByIdentifier($accessToken);
     }
 
     /**
      * @return void
      */
-    public function test_ValidateToken_ShouldReturnFalse_WhenTokenCannotBeFetched()
+    public function test_getAccessTokenByIdentifier_ShouldThrowSpecificException_WhenAccessTokenDoesNotExist()
     {
-        $accessToken = AccessTokenFixture::tokenIdentifier();
+        self::expectException(AccessTokenNotFoundException::class);
 
-        $this->statement->execute()->willThrow(new PDOException);
-
-        self::assertFalse($this->accessTokenService->validateToken($accessToken));
-    }
-
-    /**
-     * @return void
-     */
-    public function test_ValidateToken_ShouldReturnFalse_WhenTokenDoesNotExist()
-    {
         $accessToken = AccessTokenFixture::tokenIdentifier();
 
         $this->statement->fetch()->willReturn([]);
 
-        self::assertFalse($this->accessTokenService->validateToken($accessToken));
+        $this->accessTokenService->getAccessTokenByIdentifier($accessToken);
     }
 
     /**
      * @return void
      */
-    public function test_ValidateToken_ShouldReturnTrue_WhenTokenIsValid()
+    public function test_getAccessTokenByIdentifier_ShouldThrowSpecificException_WhenUnableToFetch()
     {
+        self::expectException(UnableToRetrieveAccessTokenException::class);
+
         $accessToken = AccessTokenFixture::tokenIdentifier();
 
-        $this->systemClock->getCurrentDateAndTime()->willReturn(new DateTimeImmutable('2018-02-24 13:58:42'));
+        $this->statement->execute()->willThrow(new PDOException);
+
+        $this->accessTokenService->getAccessTokenByIdentifier($accessToken);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_getAccessTokenByIdentifier_ShouldReturnToken_WhenItExists()
+    {
+        $accessTokenIdentifier = AccessTokenFixture::tokenIdentifier();
+        $refreshTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
+
         $this->statement->fetch()->willReturn($this->accessTokenFetchResult(
-            $accessToken->toString(),
+            $accessTokenIdentifier->toString(),
             new DateTimeImmutable('2018-02-28 17:59:48'),
-            AccessTokenFixture::randomTokenIdentifier()->toString()
+            $refreshTokenIdentifier->toString()
         ));
 
-        self::assertTrue($this->accessTokenService->validateToken($accessToken));
+        $accessToken = $this->accessTokenService->getAccessTokenByIdentifier($accessTokenIdentifier);
+
+        self::assertInstanceOf(AccessToken::class, $accessToken);
+        self::assertEquals($accessTokenIdentifier, $accessToken->getTokenIdentifier());
+        self::assertEquals($refreshTokenIdentifier, $accessToken->getRefreshTokenIdentifier());
     }
 
     /**

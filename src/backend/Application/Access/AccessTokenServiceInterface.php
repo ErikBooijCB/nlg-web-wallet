@@ -28,16 +28,18 @@ interface AccessTokenServiceInterface
     public function expireToken(TokenIdentifier $accessToken);
 
     /**
+     * @param TokenIdentifier $accessToken
+     *
+     * @return AccessToken
+     * @throws AccessTokenNotFoundException
+     * @throws UnableToRetrieveAccessTokenException
+     */
+    public function getAccessTokenByIdentifier(TokenIdentifier $accessToken): AccessToken;
+
+    /**
      * @param TokenIdentifier $refreshToken
      *
      * @return AccessToken
      */
     public function refreshToken(TokenIdentifier $refreshToken): AccessToken;
-
-    /**
-     * @param TokenIdentifier $accessToken
-     *
-     * @return bool
-     */
-    public function validateToken(TokenIdentifier $accessToken): bool;
 }

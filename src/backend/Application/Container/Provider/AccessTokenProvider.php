@@ -27,6 +27,6 @@ class AccessTokenProvider extends AbstractServiceProvider
         $container = $this->getContainer();
 
         $container->add(AccessTokenServiceInterface::class, PdoAccessTokenService::class)
-            ->withArguments([PDO::class, SystemClock::class]);
+            ->withArgument(PDO::class);
     }
 }

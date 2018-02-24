@@ -7,10 +7,13 @@ use DateInterval;
 use DateTimeImmutable;
 use Exception;
 use GuldenWallet\Backend\Application\Access\AccessToken;
+use GuldenWallet\Backend\Application\Access\AccessTokenNotFoundException;
 use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
+use GuldenWallet\Backend\Application\Access\InvalidTokenIdentifierException;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
+use GuldenWallet\Backend\Application\Access\UnableToRetrieveAccessTokenException;
 use GuldenWallet\Backend\Application\Helper\SystemClock;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\ExpireAccessTokenStatement;
@@ -19,23 +22,19 @@ use GuldenWallet\Backend\Infrastructure\Access\Statement\FetchCredentialsStateme
 use GuldenWallet\Backend\Infrastructure\Access\Statement\PersistNewTokenStatement;
 use GuldenWallet\Backend\Infrastructure\Database\Prepare;
 use PDO;
+use PDOException;
 
 class PdoAccessTokenService implements AccessTokenServiceInterface
 {
     /** @var PDO */
     private $pdo;
 
-    /** @var SystemClock */
-    private $systemClock;
-
     /**
      * @param PDO         $pdo
-     * @param SystemClock $systemClock
      */
-    public function __construct(PDO $pdo, SystemClock $systemClock)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
-        $this->systemClock = $systemClock;
     }
 
     /**
@@ -85,6 +84,36 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
     }
 
     /**
+     * @param TokenIdentifier $accessToken
+     *
+     * @return AccessToken
+     * @throws AccessTokenNotFoundException
+     * @throws UnableToRetrieveAccessTokenException
+     */
+    public function getAccessTokenByIdentifier(TokenIdentifier $accessToken): AccessToken
+    {
+        try {
+            $statement = Prepare::statement($this->pdo, new FetchAccessTokenDetailsStatement($accessToken));
+
+            $statement->execute();
+
+            $accessTokenData = $statement->fetch();
+
+            if (empty($accessTokenData)) throw new AccessTokenNotFoundException;
+
+            return new AccessToken(
+                TokenIdentifier::fromString($accessTokenData['ACCESS_TOKEN']),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $accessTokenData['EXPIRATION']),
+                TokenIdentifier::fromString($accessTokenData['REFRESH_TOKEN'])
+            );
+        } catch (InvalidTokenIdentifierException $exception) {
+            throw UnableToRetrieveAccessTokenException::fromPrevious($exception);
+        } catch (PDOException $exception) {
+            throw UnableToRetrieveAccessTokenException::fromPrevious($exception);
+        }
+    }
+
+    /**
      * @inheritdoc
      *
      * @codeCoverageIgnore until implementation is in place
@@ -98,28 +127,6 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
             new DateTimeImmutable,
             TokenIdentifier::generate()
         );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function validateToken(TokenIdentifier $accessToken): bool
-    {
-        try {
-            $statement = Prepare::statement($this->pdo, new FetchAccessTokenDetailsStatement($accessToken));
-
-            $statement->execute();
-
-            $accessTokenData = $statement->fetch();
-
-            if (empty($accessTokenData)) return false;
-
-            $expiration = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $accessTokenData['EXPIRATION']);
-
-            return $expiration >= $this->systemClock->getCurrentDateAndTime();
-        } catch (Exception $exception) {
-            return false;
-        }
     }
 
     /**

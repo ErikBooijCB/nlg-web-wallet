@@ -45,7 +45,7 @@ class AccessToken
     /**
      * @return TokenIdentifier
      */
-    public function getRefreshToken(): TokenIdentifier
+    public function getRefreshTokenIdentifier(): TokenIdentifier
     {
         return $this->refreshToken;
     }
