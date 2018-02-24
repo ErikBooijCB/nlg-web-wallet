@@ -123,7 +123,7 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
             $carry[strtolower($row['SETTING_KEY'])] = $row['SETTING_VALUE'];
 
             return $carry;
-        }, ['email' => null, 'password_hash' => null]);
+        }, ['email' => null, 'password_hash' => '']);
 
         return $credentials['email'] === $emailAddress && password_verify($password, $credentials['password_hash']);
     }
