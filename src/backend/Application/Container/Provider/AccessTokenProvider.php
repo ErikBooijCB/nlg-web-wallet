@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace GuldenWallet\Backend\Application\Container\Provider;
 
 use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
+use GuldenWallet\Backend\Application\Helper\SystemClock;
 use GuldenWallet\Backend\Infrastructure\Access\PdoAccessTokenService;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use PDO;
@@ -26,6 +27,6 @@ class AccessTokenProvider extends AbstractServiceProvider
         $container = $this->getContainer();
 
         $container->add(AccessTokenServiceInterface::class, PdoAccessTokenService::class)
-            ->withArgument(PDO::class);
+            ->withArguments([PDO::class, SystemClock::class]);
     }
 }

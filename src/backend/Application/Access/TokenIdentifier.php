@@ -14,6 +14,13 @@ final class TokenIdentifier
     private $identifier = '';
 
     /**
+     * TokenIdentifier should only be created through its factory methods
+     */
+    private function __construct()
+    {
+    }
+
+    /**
      * @param TokenIdentifier $tokenIdentifier
      *
      * @return bool

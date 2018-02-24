@@ -11,8 +11,10 @@ use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
+use GuldenWallet\Backend\Application\Helper\SystemClock;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\ExpireAccessTokenStatement;
+use GuldenWallet\Backend\Infrastructure\Access\Statement\FetchAccessTokenDetailsStatement;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\FetchCredentialsStatement;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\PersistNewTokenStatement;
 use GuldenWallet\Backend\Infrastructure\Database\Prepare;
@@ -23,12 +25,17 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
     /** @var PDO */
     private $pdo;
 
+    /** @var SystemClock */
+    private $systemClock;
+
     /**
-     * @param PDO $pdo
+     * @param PDO         $pdo
+     * @param SystemClock $systemClock
      */
-    public function __construct(PDO $pdo)
+    public function __construct(PDO $pdo, SystemClock $systemClock)
     {
         $this->pdo = $pdo;
+        $this->systemClock = $systemClock;
     }
 
     /**
@@ -95,14 +102,24 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
 
     /**
      * @inheritdoc
-     *
-     * @codeCoverageIgnore until implementation is in place
      */
     public function validateToken(TokenIdentifier $accessToken): bool
     {
-        // TODO: Implement validateToken() method.
+        try {
+            $statement = Prepare::statement($this->pdo, new FetchAccessTokenDetailsStatement($accessToken));
 
-        return false;
+            $statement->execute();
+
+            $accessTokenData = $statement->fetch();
+
+            if (empty($accessTokenData)) return false;
+
+            $expiration = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $accessTokenData['EXPIRATION']);
+
+            return $expiration >= $this->systemClock->getCurrentDateAndTime();
+        } catch (Exception $exception) {
+            return false;
+        }
     }
 
     /**
