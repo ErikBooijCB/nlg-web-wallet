@@ -1,5 +1,6 @@
 <?php
 
+include __DIR__ . '/StepDefinitions/AccessTokenLifecycle.php';
 
 /**
  * Inherited Methods
@@ -19,8 +20,33 @@
 class ApiTester extends \Codeception\Actor
 {
     use _generated\ApiTesterActions;
+    use AccessTokenLifeCycle;
 
-   /**
-    * Define custom actions here
-    */
+    /**
+     * @Then the response should be JSON with a :statusCode status code
+     */
+    public function theResponseShouldBeJson($statusCode)
+    {
+        $this->seeResponseIsJSON();
+        $this->seeResponseCodeIs($statusCode);
+    }
+
+    /**
+     * @Then the status should be :status
+     */
+    public function theStatusShouldBe($status)
+    {
+        $this->seeResponseContainsJson(['status' => $status]);
+    }
+
+    /**
+     * @Then it should be an error response
+     */
+    public function itShouldBeAnErrorResponse()
+    {
+        $this->seeResponseContainsJson(['status' => 'error']);
+        $this->seeResponseMatchesJsonType([
+            'message' => 'string',
+        ]);
+    }
 }
