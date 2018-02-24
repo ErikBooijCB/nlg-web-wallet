@@ -1,5 +1,14 @@
 language: php
 
+sudo: required
+
+services:
+  - docker
+
+addons:
+  hosts:
+    - gulden-wallet.dev.zone
+
 cache:
   directories:
     - $HOME/.composer/cache/files
@@ -14,14 +23,14 @@ branches:
   - master
 
 before_script:
-  - travis_retry composer install --no-interaction
+  - sudo /etc/init.d/mysql stop
+  - ./install-development
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 
 script:
-  - ./vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=build/logs/clover.xml
-  - ./vendor/bin/psalm
+  - composer test-ci
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --debug

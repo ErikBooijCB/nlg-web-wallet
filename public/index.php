@@ -15,8 +15,15 @@ require __DIR__ . '/../vendor/autoload.php';
 
 GlobalConstant::write(Constant::APP_ROOT, realpath(__DIR__ . '/../'));
 GlobalConstant::write(Constant::CONFIGURATION_DIR, realpath(__DIR__ . '/../etc'));
-GlobalConstant::write(Constant::ENVIRONMENT, trim(file_get_contents(__DIR__ . '/../.ENV') ?: 'production'));
 GlobalConstant::write(Constant::LOG_DIR, realpath(__DIR__ . '/../logs'));
+
+$envFile = __DIR__ . '/../.ENV';
+
+if (file_exists($envFile) && is_readable($envFile)) {
+    GlobalConstant::write(Constant::ENVIRONMENT, trim(file_get_contents(__DIR__ . '/../.ENV')));
+} else {
+    GlobalConstant::write(Constant::ENVIRONMENT, 'production');
+}
 
 $container = ContainerFactory::create();
 

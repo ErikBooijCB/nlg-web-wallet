@@ -15,11 +15,19 @@ printf "\n === ${BLUE}Wait for database container to become available${NC} === \
 while ! mysqladmin ping -h127.0.0.1 --silent; do
     echo 'Waiting...'
     sleep 1
+
+    ((c++)) && ((c==20)) && break
 done
 printf "\n${GREEN}Done, database container is ready!${NC}\n"
 
 printf "\n === ${BLUE}Running Docker Containers${NC} === \n\n"
 docker-compose ps
+
+#if [ "$TRAVIS" = "true" ]; then
+  printf "\n === ${BLUE}Running Docker Containers [TRAVIS ONLY]${NC} === \n\n"
+
+  docker ps -a
+#fi
 
 printf "\n === ${BLUE}Preparing database for migration${NC} === \n\n"
 cat docker/pre-migration.sql | mysql -h127.0.0.1 -uroot -ptesttest --silent
