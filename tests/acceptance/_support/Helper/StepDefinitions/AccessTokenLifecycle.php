@@ -8,29 +8,17 @@ use Codeception\Util\Fixtures;
 trait AccessTokenLifecycle
 {
     /**
-     * @Given I try to log in as :arg1 with password :arg2
+     * @Given I do not have a valid token
      */
-    public function iTryToLogInAsWithPassword($email, $password)
+    public function givenIDoNotHaveAValidToken()
     {
-        $this->haveHttpHeader('Content-type', 'application/json');
-        $this->sendPOST('/access-tokens', ['email' => $email, 'password' => $password]);
-    }
-
-    /**
-     * @Given /I send an incomplete request: (.*)/
-     */
-    public function iSendAnIncompleteRequest($requestBody)
-    {
-        $requestBody = json_decode($requestBody, true);
-
-        $this->haveHttpHeader('Content-type', 'application/json');
-        $this->sendPOST('/access-tokens', $requestBody);
+        Fixtures::add('accessToken', '0000000000000000000000000000000000000000000000000000000000000000');
     }
 
     /**
      * @Given I have obtained an access token
      */
-    public function iHaveObtainedAnAccessToken()
+    public function givenIHaveObtainedAnAccessToken()
     {
         $this->haveHttpHeader('Content-type', 'application/json');
         $this->sendPOST('/access-tokens', ['email' => 'john@doe.com', 'password' => 'testtest']);
@@ -39,25 +27,29 @@ trait AccessTokenLifecycle
     }
 
     /**
-     * @Given I do not have a valid token
+     * @Given /I send an incomplete request: (.*)/
      */
-    public function iDoNotHaveAValidToken()
+    public function givenISendAnIncompleteRequest($requestBody)
     {
-        Fixtures::add('accessToken', '0000000000000000000000000000000000000000000000000000000000000000');
+        $requestBody = json_decode($requestBody, true);
+
+        $this->haveHttpHeader('Content-type', 'application/json');
+        $this->sendPOST('/access-tokens', $requestBody);
     }
 
     /**
-     * @When I fetch the token details
+     * @Given I try to log in as :arg1 with password :arg2
      */
-    public function iFetchTheTokenDetails()
+    public function givenITryToLogInAsWithPassword($email, $password)
     {
-        $this->sendGET('/access-tokens/' . Fixtures::get('accessToken'));
+        $this->haveHttpHeader('Content-type', 'application/json');
+        $this->sendPOST('/access-tokens', ['email' => $email, 'password' => $password]);
     }
 
     /**
      * @Then it should contain an access token, with an expiration date and refresh token
      */
-    public function iShouldGetAnAccessTokenWithAnExpirationDateAndRefreshToken()
+    public function thenIShouldGetAnAccessTokenWithAnExpirationDateAndRefreshToken()
     {
         $this->seeResponseMatchesJsonType([
             'data' => [
@@ -71,12 +63,28 @@ trait AccessTokenLifecycle
     /**
      * @Then it should expose the token expiration
      */
-    public function itShouldExposeTheTokenExpiration()
+    public function thenItShouldExposeTheTokenExpiration()
     {
         $this->seeResponseMatchesJsonType([
             'data' => [
                 'expires'      => 'string:date',
             ],
         ]);
+    }
+
+    /**
+     * @When I fetch the token details
+     */
+    public function whenIFetchTheTokenDetails()
+    {
+        $this->sendGET('/access-tokens/' . Fixtures::get('accessToken'));
+    }
+
+    /**
+     * @When I revoke the token
+     */
+    public function whenIRevokeTheToken()
+    {
+        $this->sendDELETE('/access-tokens/' . Fixtures::get('accessToken'));
     }
 }

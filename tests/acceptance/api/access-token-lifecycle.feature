@@ -35,3 +35,9 @@ Feature: access-token-lifecycle
     Given I do not have a valid token
     When I fetch the token details
     Then the response should be JSON with a 404 status code
+
+  Scenario: Revoke an access token
+    Given I have obtained an access token
+    When I revoke the token
+    And I fetch the token details
+    Then the response should be JSON with a 404 status code
