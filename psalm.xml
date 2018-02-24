@@ -5,7 +5,7 @@
     totallyTyped="false"
 >
     <projectFiles>
-        <directory name="backend/src" />
+        <directory name="src/backend" />
     </projectFiles>
 
     <issueHandlers>

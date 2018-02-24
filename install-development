@@ -7,11 +7,13 @@ NC='\033[0m' # No Color
 printf "\n === ${BLUE}Stopping and recreating Docker containers${NC} === \n\n"
 docker-compose down -v
 docker-compose up -d
+printf "\n${GREEN}Done, containers have been built!${NC}\n"
 
-printf "\n === ${BLUE}Composer Install${NC} === \n\n"
+printf "\n === ${BLUE}Installing dependencies${NC} === \n\n"
 composer install
+printf "\n${GREEN}Done, dependencies have been installed!${NC}\n"
 
-printf "\n === ${BLUE}Wait for database container to become available${NC} === \n\n"
+printf "\n === ${BLUE}Waiting for database container to become available${NC} === \n\n"
 while ! mysqladmin ping -h127.0.0.1 --silent; do
     echo 'Waiting...'
     sleep 1
@@ -20,11 +22,11 @@ while ! mysqladmin ping -h127.0.0.1 --silent; do
 done
 printf "\n${GREEN}Done, database container is ready!${NC}\n"
 
-printf "\n === ${BLUE}Running Docker Containers${NC} === \n\n"
+printf "\n === ${BLUE}Running Docker Containers:${NC} === \n\n"
 docker-compose ps
 
 if [ "$TRAVIS" = "true" ]; then
-  printf "\n === ${BLUE}Running Docker Containers [TRAVIS ONLY]${NC} === \n\n"
+  printf "\n === ${BLUE}Running Docker Containers [TRAVIS ONLY]:${NC} === \n\n"
 
   docker ps -a
 fi
