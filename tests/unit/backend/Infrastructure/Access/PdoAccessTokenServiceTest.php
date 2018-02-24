@@ -8,9 +8,11 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use GuldenWallet\Backend\Application\Access\AccessToken;
 use GuldenWallet\Backend\Application\Access\AccessTokenNotFoundException;
+use GuldenWallet\Backend\Application\Access\InvalidRefreshTokenException;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
+use GuldenWallet\Backend\Application\Access\UnableToRefreshTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToRetrieveAccessTokenException;
 use GuldenWallet\Backend\Application\Helper\SystemClock;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
@@ -63,6 +65,15 @@ class PdoAccessTokenServiceTest extends TestCase
         $this->accessTokenService = new PdoAccessTokenService($this->pdo->reveal());
     }
 
+    /**
+     * @return void
+     */
+    public function test_CreateToken_ShouldReturnNewAccessToken_WhenCredentialsAreValidAndTokenCanBePersisted()
+    {
+        $accessToken = $this->accessTokenService->createToken('test@user.com', 'test', new DateInterval('P30D'));
+
+        self::assertInstanceOf(AccessToken::class, $accessToken);
+    }
 
     /**
      * @return void
@@ -93,11 +104,14 @@ class PdoAccessTokenServiceTest extends TestCase
     /**
      * @return void
      */
-    public function test_CreateToken_ShouldReturnNewAccessToken_WhenCredentialsAreValidAndTokenCanBePersisted()
+    public function test_ExpireToken_ShouldReturnTrue_WhenExpirationOfTokenIsSuccessful()
     {
-        $accessToken = $this->accessTokenService->createToken('test@user.com', 'test', new DateInterval('P30D'));
+        $token = TokenIdentifier::generate();
 
-        self::assertInstanceOf(AccessToken::class, $accessToken);
+        $this->statement->bindValue(Argument::type('string'), $token->toString(), PDO::PARAM_STR)->shouldBeCalled();
+        $this->statement->execute()->willReturn()->shouldBeCalled();
+
+        $this->accessTokenService->expireToken($token);
     }
 
     /**
@@ -117,20 +131,42 @@ class PdoAccessTokenServiceTest extends TestCase
     /**
      * @return void
      */
-    public function test_ExpireToken_ShouldReturnTrue_WhenExpirationOfTokenIsSuccessful()
+    public function test_GetAccessTokenByIdentifier_ShouldReturnToken_WhenItExists()
     {
-        $token = TokenIdentifier::generate();
+        $accessTokenIdentifier = AccessTokenFixture::tokenIdentifier();
+        $refreshTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
 
-        $this->statement->bindValue(Argument::type('string'), $token->toString(), PDO::PARAM_STR)->shouldBeCalled();
-        $this->statement->execute()->willReturn()->shouldBeCalled();
+        $this->statement->fetch()->willReturn($this->accessTokenFetchResult(
+            $accessTokenIdentifier->toString(),
+            new DateTimeImmutable('2018-02-28 17:59:48'),
+            $refreshTokenIdentifier->toString()
+        ));
 
-        $this->accessTokenService->expireToken($token);
+        $accessToken = $this->accessTokenService->getAccessTokenByIdentifier($accessTokenIdentifier);
+
+        self::assertInstanceOf(AccessToken::class, $accessToken);
+        self::assertEquals($accessTokenIdentifier, $accessToken->getTokenIdentifier());
+        self::assertEquals($refreshTokenIdentifier, $accessToken->getRefreshTokenIdentifier());
     }
 
     /**
      * @return void
      */
-    public function test_getAccessTokenByIdentifier_ShouldThrowSpecificException_WhenIdentifierIsInvalid()
+    public function test_GetAccessTokenByIdentifier_ShouldThrowSpecificException_WhenAccessTokenDoesNotExist()
+    {
+        self::expectException(AccessTokenNotFoundException::class);
+
+        $accessToken = AccessTokenFixture::tokenIdentifier();
+
+        $this->statement->fetch()->willReturn([]);
+
+        $this->accessTokenService->getAccessTokenByIdentifier($accessToken);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_GetAccessTokenByIdentifier_ShouldThrowSpecificException_WhenIdentifierIsInvalid()
     {
         self::expectException(UnableToRetrieveAccessTokenException::class);
 
@@ -148,21 +184,7 @@ class PdoAccessTokenServiceTest extends TestCase
     /**
      * @return void
      */
-    public function test_getAccessTokenByIdentifier_ShouldThrowSpecificException_WhenAccessTokenDoesNotExist()
-    {
-        self::expectException(AccessTokenNotFoundException::class);
-
-        $accessToken = AccessTokenFixture::tokenIdentifier();
-
-        $this->statement->fetch()->willReturn([]);
-
-        $this->accessTokenService->getAccessTokenByIdentifier($accessToken);
-    }
-
-    /**
-     * @return void
-     */
-    public function test_getAccessTokenByIdentifier_ShouldThrowSpecificException_WhenUnableToFetch()
+    public function test_GetAccessTokenByIdentifier_ShouldThrowSpecificException_WhenUnableToFetch()
     {
         self::expectException(UnableToRetrieveAccessTokenException::class);
 
@@ -176,22 +198,83 @@ class PdoAccessTokenServiceTest extends TestCase
     /**
      * @return void
      */
-    public function test_getAccessTokenByIdentifier_ShouldReturnToken_WhenItExists()
+    public function test_Refresh_ShouldRefreshToken_WhenProvidedDetailsAreValid()
     {
-        $accessTokenIdentifier = AccessTokenFixture::tokenIdentifier();
-        $refreshTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
+        $originalAccessTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
+        $originalRefreshTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
 
         $this->statement->fetch()->willReturn($this->accessTokenFetchResult(
-            $accessTokenIdentifier->toString(),
-            new DateTimeImmutable('2018-02-28 17:59:48'),
-            $refreshTokenIdentifier->toString()
+            $originalAccessTokenIdentifier->toString(),
+            new DateTimeImmutable('2018-02-24 19:34:06'),
+            $originalRefreshTokenIdentifier->toString()
         ));
 
-        $accessToken = $this->accessTokenService->getAccessTokenByIdentifier($accessTokenIdentifier);
+        $newAccessToken = $this->accessTokenService->refreshToken(
+            $originalAccessTokenIdentifier,
+            $originalRefreshTokenIdentifier
+        );
 
-        self::assertInstanceOf(AccessToken::class, $accessToken);
-        self::assertEquals($accessTokenIdentifier, $accessToken->getTokenIdentifier());
-        self::assertEquals($refreshTokenIdentifier, $accessToken->getRefreshTokenIdentifier());
+        self::assertInstanceOf(AccessToken::class, $newAccessToken);
+        self::assertNotEquals($originalAccessTokenIdentifier, $newAccessToken->getTokenIdentifier());
+        self::assertNotEquals($originalRefreshTokenIdentifier, $newAccessToken->getRefreshTokenIdentifier());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_Refresh_ShouldThrowException_WhenAccessTokenIsNotFound()
+    {
+        self::expectException(AccessTokenNotFoundException::class);
+
+        $originalAccessTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
+        $originalRefreshTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
+
+        $this->statement->fetch()->willReturn([]);
+
+        $this->accessTokenService->refreshToken(
+            $originalAccessTokenIdentifier,
+            $originalRefreshTokenIdentifier
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function test_Refresh_ShouldThrowException_WhenRefreshTokenIsInvalid()
+    {
+        self::expectException(InvalidRefreshTokenException::class);
+
+        $originalAccessTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
+        $originalRefreshTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
+
+        $this->statement->fetch()->willReturn($this->accessTokenFetchResult(
+            $originalAccessTokenIdentifier->toString(),
+            new DateTimeImmutable('2018-02-24 19:34:06'),
+            AccessTokenFixture::randomTokenIdentifier()->toString()
+        ));
+
+        $this->accessTokenService->refreshToken(
+            $originalAccessTokenIdentifier,
+            $originalRefreshTokenIdentifier
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function test_Refresh_ShouldThrowException_WhenUnableToRetrieveOrPersistToken()
+    {
+        self::expectException(UnableToRefreshTokenException::class);
+
+        $originalAccessTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
+        $originalRefreshTokenIdentifier = AccessTokenFixture::randomTokenIdentifier();
+
+        $this->statement->execute()->willThrow(new PDOException);
+
+        $this->accessTokenService->refreshToken(
+            $originalAccessTokenIdentifier,
+            $originalRefreshTokenIdentifier
+        );
     }
 
     /**

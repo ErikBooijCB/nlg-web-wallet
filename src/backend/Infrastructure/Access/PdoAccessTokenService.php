@@ -9,12 +9,13 @@ use Exception;
 use GuldenWallet\Backend\Application\Access\AccessToken;
 use GuldenWallet\Backend\Application\Access\AccessTokenNotFoundException;
 use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
+use GuldenWallet\Backend\Application\Access\InvalidRefreshTokenException;
 use GuldenWallet\Backend\Application\Access\InvalidTokenIdentifierException;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToCreateAccessTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToExpireAccessTokenException;
+use GuldenWallet\Backend\Application\Access\UnableToRefreshTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToRetrieveAccessTokenException;
-use GuldenWallet\Backend\Application\Helper\SystemClock;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\ExpireAccessTokenStatement;
 use GuldenWallet\Backend\Infrastructure\Access\Statement\FetchAccessTokenDetailsStatement;
@@ -46,23 +47,7 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
             throw new InvalidCredentialsException;
         }
 
-        $accessToken = TokenIdentifier::generate();
-        $expiration = (new DateTimeImmutable)->add($validity);
-        $refreshToken = TokenIdentifier::generate();
-
-        try {
-            $statement = Prepare::statement($this->pdo, new PersistNewTokenStatement(
-                $accessToken,
-                $expiration,
-                $refreshToken
-            ));
-
-            $statement->execute();
-
-            return new AccessToken($accessToken, $expiration, $refreshToken);
-        } catch (Exception $exception) {
-            throw UnableToCreateAccessTokenException::fromPrevious($exception);
-        }
+        return $this->generateToken($validity);
     }
 
 
@@ -84,11 +69,7 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
     }
 
     /**
-     * @param TokenIdentifier $accessToken
-     *
-     * @return AccessToken
-     * @throws AccessTokenNotFoundException
-     * @throws UnableToRetrieveAccessTokenException
+     * @inheritdoc
      */
     public function getAccessTokenByIdentifier(TokenIdentifier $accessToken): AccessToken
     {
@@ -115,18 +96,59 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
 
     /**
      * @inheritdoc
-     *
-     * @codeCoverageIgnore until implementation is in place
      */
-    public function refreshToken(TokenIdentifier $refreshToken): AccessToken
+    public function refreshToken(TokenIdentifier $accessToken, TokenIdentifier $refreshToken): AccessToken
     {
-        // TODO: Implement refreshToken() method.
+        try {
+            $statement = Prepare::statement($this->pdo, new FetchAccessTokenDetailsStatement($accessToken));
 
-        return new AccessToken(
-            TokenIdentifier::generate(),
-            new DateTimeImmutable,
-            TokenIdentifier::generate()
-        );
+            $statement->execute();
+
+            $accessTokenData = $statement->fetch();
+
+            if (empty($accessTokenData)) {
+                throw new AccessTokenNotFoundException;
+            }
+
+            if ($accessTokenData['REFRESH_TOKEN'] !== $refreshToken->toString()) {
+                throw new InvalidRefreshTokenException;
+            }
+
+            $newToken = $this->generateToken(new DateInterval('P30D'));
+
+            Prepare::statement($this->pdo, new ExpireAccessTokenStatement($accessToken))->execute();
+
+            return $newToken;
+        } catch (PDOException $exception) {
+            throw new UnableToRefreshTokenException;
+        }
+    }
+
+    /**
+     * @param DateInterval $validity
+     *
+     * @return AccessToken
+     * @throws UnableToCreateAccessTokenException
+     */
+    private function generateToken(DateInterval $validity): AccessToken
+    {
+        $accessToken = TokenIdentifier::generate();
+        $expiration = (new DateTimeImmutable)->add($validity);
+        $refreshToken = TokenIdentifier::generate();
+
+        try {
+            $statement = Prepare::statement($this->pdo, new PersistNewTokenStatement(
+                $accessToken,
+                $expiration,
+                $refreshToken
+            ));
+
+            $statement->execute();
+
+            return new AccessToken($accessToken, $expiration, $refreshToken);
+        } catch (Exception $exception) {
+            throw UnableToCreateAccessTokenException::fromPrevious($exception);
+        }
     }
 
     /**

@@ -41,3 +41,9 @@ Feature: access-token-lifecycle
     When I revoke the token
     And I fetch the token details
     Then the response should be JSON with a 404 status code
+
+  Scenario: Refresh an access token
+    Given I have obtained an access and refresh token
+    When I refresh the token
+    Then I should get a new valid token
+    And the old token should be invalid

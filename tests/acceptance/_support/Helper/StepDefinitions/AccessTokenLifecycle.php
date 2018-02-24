@@ -16,6 +16,18 @@ trait AccessTokenLifecycle
     }
 
     /**
+     * @Given I have obtained an access and refresh token
+     */
+    public function givenIHaveObtainedAnAccessAndRefreshToken()
+    {
+        $this->haveHttpHeader('Content-type', 'application/json');
+        $this->sendPOST('/access-tokens', ['email' => 'john@doe.com', 'password' => 'testtest']);
+
+        Fixtures::add('accessToken', $this->grabDataFromResponseByJsonPath('data.accessToken')[0]);
+        Fixtures::add('refreshToken', $this->grabDataFromResponseByJsonPath('data.refreshToken')[0]);
+    }
+
+    /**
      * @Given I have obtained an access token
      */
     public function givenIHaveObtainedAnAccessToken()
@@ -47,6 +59,16 @@ trait AccessTokenLifecycle
     }
 
     /**
+     * @Then I should get a new valid token
+     */
+    public function thenIShouldGetANewValidToken()
+    {
+        $this->sendGET('/access-tokens/' . Fixtures::get('newAccessToken'));
+
+        $this->seeResponseCodeIs(200);
+    }
+
+    /**
      * @Then it should contain an access token, with an expiration date and refresh token
      */
     public function thenIShouldGetAnAccessTokenWithAnExpirationDateAndRefreshToken()
@@ -67,9 +89,19 @@ trait AccessTokenLifecycle
     {
         $this->seeResponseMatchesJsonType([
             'data' => [
-                'expires'      => 'string:date',
+                'expires' => 'string:date',
             ],
         ]);
+    }
+
+    /**
+     * @Then the old token should be invalid
+     */
+    public function thenTheOldTokenShouldBeInvalid()
+    {
+        $this->sendGET('/access-tokens/' . Fixtures::get('accessToken'));
+
+        $this->seeResponseCodeIs(404);
     }
 
     /**
@@ -78,6 +110,18 @@ trait AccessTokenLifecycle
     public function whenIFetchTheTokenDetails()
     {
         $this->sendGET('/access-tokens/' . Fixtures::get('accessToken'));
+    }
+
+    /**
+     * @When I refresh the token
+     */
+    public function whenIRefreshTheToken()
+    {
+        $this->sendPOST('/access-tokens/' . Fixtures::get('accessToken'), [
+            'refresh' => Fixtures::get('refreshToken'),
+        ]);
+
+        Fixtures::add('newAccessToken', $this->grabDataFromResponseByJsonPath('data.accessToken')[0]);
     }
 
     /**

@@ -37,9 +37,13 @@ interface AccessTokenServiceInterface
     public function getAccessTokenByIdentifier(TokenIdentifier $accessToken): AccessToken;
 
     /**
+     * @param TokenIdentifier $accessToken
      * @param TokenIdentifier $refreshToken
      *
      * @return AccessToken
+     * @throws AccessTokenNotFoundException
+     * @throws InvalidRefreshTokenException
+     * @throws UnableToRefreshTokenException
      */
-    public function refreshToken(TokenIdentifier $refreshToken): AccessToken;
+    public function refreshToken(TokenIdentifier $accessToken, TokenIdentifier $refreshToken): AccessToken;
 }

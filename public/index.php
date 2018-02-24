@@ -33,9 +33,10 @@ $app->add(ExceptionHandlingMiddleware::class);
 $app->add(NotFoundHandlingMiddleware::class);
 
 $app->group('/api', function () {
-    $this->delete('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':delete');
-    $this->get('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':get');
-    $this->post('/access-tokens', AccessTokenHttpController::class . ':post');
+    $this->delete('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':revoke');
+    $this->get('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':retrieve');
+    $this->post('/access-tokens', AccessTokenHttpController::class . ':create');
+    $this->post('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':refresh');
 });
 
 $app->run();
