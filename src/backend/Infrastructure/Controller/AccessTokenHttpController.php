@@ -5,7 +5,6 @@ namespace GuldenWallet\Backend\Infrastructure\Controller;
 
 use DateInterval;
 use DateTime;
-use GuldenWallet\Backend\Application\Access\AccessToken;
 use GuldenWallet\Backend\Application\Access\AccessTokenNotFoundException;
 use GuldenWallet\Backend\Application\Access\AccessTokenServiceInterface;
 use GuldenWallet\Backend\Application\Access\InvalidRefreshTokenException;
@@ -19,7 +18,6 @@ use GuldenWallet\Backend\Application\Helper\ResponseFactory;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 class AccessTokenHttpController
 {

@@ -11,11 +11,13 @@ use Slim\App;
 
 date_default_timezone_set('UTC');
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
-GlobalConstant::write(Constant::APP_ROOT, realpath(__DIR__ . '/../'));
-GlobalConstant::write(Constant::CONFIGURATION_DIR, realpath(__DIR__ . '/../etc'));
-GlobalConstant::write(Constant::LOG_DIR, realpath(__DIR__ . '/../logs'));
+const ROOT_PATH = __DIR__ . '/../../';
+
+GlobalConstant::write(Constant::APP_ROOT, realpath(ROOT_PATH));
+GlobalConstant::write(Constant::CONFIGURATION_DIR, realpath(ROOT_PATH . '/etc'));
+GlobalConstant::write(Constant::LOG_DIR, realpath(ROOT_PATH . '/logs'));
 
 $envFile = __DIR__ . '/../.ENV';
 
@@ -32,11 +34,12 @@ $app = $container->get(App::class);
 $app->add(ExceptionHandlingMiddleware::class);
 $app->add(NotFoundHandlingMiddleware::class);
 
-$app->group('/api', function () {
-    $this->delete('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':revoke');
-    $this->get('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':retrieve');
-    $this->post('/access-tokens', AccessTokenHttpController::class . ':create');
-    $this->post('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':refresh');
-});
+/*******************************************/
+/* ACCESS TOKENS                            /
+/*******************************************/
+$app->delete('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':revoke');
+$app->get('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':retrieve');
+$app->post('/access-tokens', AccessTokenHttpController::class . ':create');
+$app->post('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':refresh');
 
 $app->run();
