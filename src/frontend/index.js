@@ -8,10 +8,10 @@ import createSagaMiddleware from 'redux-saga';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+import AppRoot from './modules/_shared/components/AppRoot';
+import authenticationSaga from './modules/login/sagas';
 import rootReducer from './reducer';
-import Router from './router';
 import theme from './theme';
-import loginSaga from './modules/login/sagas';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();
@@ -22,12 +22,13 @@ const store = createStore(
   composeEnhancers(applyMiddleware(sagaMiddleware)),
 );
 
+sagaMiddleware.run(authenticationSaga);
+
 ReactDOM.render((
   <Provider store={ store }>
     <MuiThemeProvider muiTheme={ theme }>
-      <Router/>
+      <AppRoot/>
     </MuiThemeProvider>
   </Provider>
 ), document.querySelector('#application-root'));
 
-sagaMiddleware.run(loginSaga);

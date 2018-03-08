@@ -1,4 +1,4 @@
-import { all, call, put, takeEvery } from 'redux-saga/effects';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
 
 import * as actions from '../actions';
 import AccessTokenService from '../../_shared/services/AccessTokenService';
@@ -6,8 +6,51 @@ import { doPost } from '../../_shared/utilities/requestHelper';
 
 const accessTokenService = new AccessTokenService();
 
+function* handleCheckLoginStatus() {
+  try {
+    const token = accessTokenService.getAccessToken();
+
+    if (!token) {
+      yield put(actions.loginStatusNotLoggedIn());
+
+      return 0;
+    }
+
+    const tokenValidity = yield call([accessTokenService, 'validateToken'], token);
+
+    if (tokenValidity) {
+      yield put(actions.loginStatusLoggedIn());
+    } else {
+
+      yield attemptRefreshOfToken();
+    }
+  } catch (e) {
+    yield put(actions.loginStatusNotLoggedIn());
+  }
+}
+
+function* attemptRefreshOfToken() {
+  try {
+    const newToken = yield call([accessTokenService, 'refreshToken']);
+
+    if (newToken) {
+      yield put(actions.loginStatusLoggedIn());
+    } else {
+      yield put(actions.loginStatusNotLoggedIn());
+    }
+  } catch (e) {
+    yield put(actions.loginStatusNotLoggedIn());
+  }
+}
+
 function* handleLogIn( action ) {
-  const { email, password, stayLoggedIn } = action.payload;
+  const { email, password } = action.payload;
+
+  if (!email || !password) {
+    yield put(actions.logInFailed());
+
+    return null;
+  }
 
   try {
     const { status, body } = yield call(doPost, '/api/access-tokens', {
@@ -20,7 +63,7 @@ function* handleLogIn( action ) {
     } else {
       const { data: { accessToken, refreshToken } } = body;
 
-      yield put(actions.logInSucceeded(accessToken, refreshToken, stayLoggedIn));
+      yield put(actions.logInSucceeded({ accessToken, refreshToken }));
     }
   } catch ( e ) {
     yield put(actions.logInFailed());
@@ -28,14 +71,17 @@ function* handleLogIn( action ) {
 }
 
 function* handleLogInSucceeded( action ) {
-  accessTokenService.setToken(action.payload.accessToken, action.payload.refreshToken);
+  const { accessToken, refreshToken } = action.payload;
+
+  accessTokenService.setToken(accessToken, refreshToken);
 }
 
-function* crypto() {
+function* authenticationSaga() {
   yield all([
-    takeEvery(actions.LOG_IN, handleLogIn),
-    takeEvery(actions.LOG_IN_SUCCEEDED, handleLogInSucceeded),
+    takeLatest(actions.LOG_IN, handleLogIn),
+    takeLatest(actions.LOG_IN_SUCCEEDED, handleLogInSucceeded),
+    takeLatest(actions.CHECK_LOGIN_STATUS, handleCheckLoginStatus),
   ]);
 }
 
-export default crypto;
+export default authenticationSaga;

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import LoggedInMenu from './header-menu/LoggedInHeaderMenu';
+import LoggedInMenu from './Menu/LoggedIn';
 
 const Header = ( { loggedIn, subTitle } ) => (
   <AppBar
@@ -30,7 +30,7 @@ const Title = styled.span`
 `;
 
 const SubTitle = styled.span`
-  font-weight: 400;
+  font-weight: 500;
 `;
 
 Header.propTypes = {

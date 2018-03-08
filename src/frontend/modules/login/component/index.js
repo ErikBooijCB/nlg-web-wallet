@@ -1,66 +1,89 @@
 import React from 'react';
 
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Field, reduxForm } from 'redux-form';
+import { TextField } from 'redux-form-material-ui';
 import styled from 'styled-components';
 
 import FlatButton from 'material-ui/FlatButton';
 import LinearProgress from 'material-ui/LinearProgress';
 import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import Toggle from 'material-ui/Toggle';
+import SnackBar from 'material-ui/Snackbar';
 
 import * as actions from '../actions';
 import theme from '../../../theme';
 
-let emailField, passwordField, stayLoggedInToggle;
+const reduxFormSettings = {
+  form: 'logIn',
+  initialValues: {
+    email: '',
+    password: '',
+  },
+};
 
-const Login = ( { loggingIn, logIn } ) => (
-  <div style={ { height: '100%' } }>
-    <div style={ containerStyle }>
-      <Paper style={ paperStyle }>
-        <PaperTitle>LOG IN</PaperTitle>
-        <FormContent>
-          <TextField
-            floatingLabelText="E-mail"
-            ref={ ( input ) => emailField = input }
-            style={ fieldStyle }
-            type="email"
-          />
-          <TextField
-            floatingLabelText="Password"
-            ref={ ( input ) => passwordField = input }
-            style={ fieldStyle }
-            type="password"
-          />
-          <Toggle
-            defaultToggled={ true }
-            label="Keep me logged in"
-            labelPosition="right"
-            ref={ ( input ) => stayLoggedInToggle = input }
-            style={ { marginTop: '20px' } }
-          />
-        </FormContent>
-        <LinearProgress
-          color="#f90"
-          mode="indeterminate"
-          style={ { background: '#fff', marginTop: '20px', opacity: loggingIn ? 1 : 0 } }
+class Login extends React.Component {
+  render() {
+    return (
+      <div style={ containerStyle }>
+        <SnackBar
+          autoHideDuration={ 3000 }
+          bodyStyle={ { background: '#f88' } }
+          contentStyle={ { color: '#fff' } }
+          message="You could not be logged in. Please try again."
+          open={ this.props.loginFailed }
         />
-        <div style={ buttonsStyle }>
-          <FlatButton
-            primary
-            label="Log In"
-            style={ buttonStyle }
-            onClick={ ( e ) => {
-              logIn(emailField.getValue(), passwordField.getValue(), stayLoggedInToggle.isToggled());
-            } }
-          />
-          <FlatButton secondary label="Password Forgotten" style={ buttonStyle }/>
-        </div>
-      </Paper>
-    </div>
-  </div>
-);
+        <Paper style={ paperStyle }>
+          <form onSubmit={ this.props.handleSubmit(this.props.logIn) }>
+            <PaperTitle>LOG IN</PaperTitle>
+            <FormContent>
+              <Field
+                autoComplete="username email"
+                autoFocus={ true }
+                component={ TextField }
+                floatingLabelText="E-mail"
+                name="email"
+                style={ fieldStyle }
+                tabIndex={ 0 }
+                type="email"
+              />
+              <Field
+                autoComplete="current-password"
+                component={ TextField }
+                floatingLabelText="Password"
+                name="password"
+                style={ fieldStyle }
+                tabIndex={ 0 }
+                type="password"
+              />
+            </FormContent>
+            <LinearProgress
+              color="#f90"
+              mode="indeterminate"
+              style={ { background: '#fff', marginTop: '20px', opacity: this.props.loggingIn ? 1 : 0 } }
+            />
+            <div style={ buttonsStyle }>
+              <FlatButton
+                primary
+                label="Log In"
+                style={ buttonStyle }
+                tabIndex={ 0 }
+                type="submit"
+              />
+              <FlatButton
+                secondary
+                label="Password Forgotten"
+                style={ buttonStyle }
+                tabIndex={ 0 }
+              />
+            </div>
+          </form>
+        </Paper>
+      </div>
+    );
+  }
+}
 
 const FormContent = styled.div`
   padding: 20px;
@@ -107,6 +130,7 @@ const paperStyle = {
 const mapStateToProps = state => {
   return {
     loggingIn: state.login.loggingIn,
+    loginFailed: state.login.loginFailed,
   };
 };
 
@@ -116,4 +140,10 @@ const mapDispatchToProps = dispatch => {
   }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+Login.propTypes = {
+  logIn: PropTypes.func.isRequired,
+  loggingIn: PropTypes.bool.isRequired,
+  loginFailed: PropTypes.bool.isRequired,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(reduxForm(reduxFormSettings)(Login));
