@@ -1,20 +1,21 @@
 import 'regenerator-runtime/runtime';
 import React from 'react';
 
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import ReactDOM                                  from 'react-dom';
+import { Provider }                              from 'react-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
-import createSagaMiddleware from 'redux-saga';
+import createSagaMiddleware                      from 'redux-saga';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import AppRoot from './modules/_shared/components/AppRoot';
+import AppRoot            from './modules/_shared/components/AppRoot';
 import authenticationSaga from './modules/login/sagas';
-import rootReducer from './reducer';
-import theme from './theme';
+import rootReducer        from './reducer';
+import theme              from './theme';
 
+// eslint-disable-next-line no-underscore-dangle
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware   = createSagaMiddleware();
 
 const store = createStore(
   rootReducer,
@@ -24,11 +25,14 @@ const store = createStore(
 
 sagaMiddleware.run(authenticationSaga);
 
-ReactDOM.render((
-  <Provider store={ store }>
-    <MuiThemeProvider muiTheme={ theme }>
-      <AppRoot/>
-    </MuiThemeProvider>
-  </Provider>
-), document.querySelector('#application-root'));
+ReactDOM.render(
+  (
+    <Provider store={ store }>
+      <MuiThemeProvider muiTheme={ theme }>
+        <AppRoot />
+      </MuiThemeProvider>
+    </Provider>
+  ),
+  document.querySelector('#application-root'),
+);
 

@@ -1,12 +1,19 @@
 import React from 'react';
 
-import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import styled    from 'styled-components';
 
-export default ({ children }) => (
-  <FullScreen>{ children }</FullScreen>
+const FullScreen = ({ children }) => (
+  <FullScreenDiv>{ children }</FullScreenDiv>
 );
 
-const FullScreen = styled.div`
+const FullScreenDiv = styled.div`
   height: 100%;
   width: 100%;
 `;
+
+FullScreen.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.node).isRequired,
+};
+
+export default FullScreen;

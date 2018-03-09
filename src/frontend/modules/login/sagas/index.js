@@ -1,11 +1,12 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 
-import * as actions from '../actions';
+import * as actions       from '../actions';
 import AccessTokenService from '../../_shared/services/AccessTokenService';
-import { doPost } from '../../_shared/utilities/requestHelper';
+import { doPost }         from '../../_shared/utilities/requestHelper';
 
 const accessTokenService = new AccessTokenService();
 
+/* eslint-disable consistent-return */
 function* handleCheckLoginStatus() {
   try {
     const token = accessTokenService.getAccessToken();
@@ -16,22 +17,22 @@ function* handleCheckLoginStatus() {
       return 0;
     }
 
-    const tokenValidity = yield call([accessTokenService, 'validateToken'], token);
+    const tokenValidity = yield call([ accessTokenService, 'validateToken' ], token);
 
     if (tokenValidity) {
       yield put(actions.loginStatusLoggedIn());
     } else {
-
       yield attemptRefreshOfToken();
     }
   } catch (e) {
     yield put(actions.loginStatusNotLoggedIn());
   }
 }
+/* eslint-enable consistent-return */
 
 function* attemptRefreshOfToken() {
   try {
-    const newToken = yield call([accessTokenService, 'refreshToken']);
+    const newToken = yield call([ accessTokenService, 'refreshToken' ]);
 
     if (newToken) {
       yield put(actions.loginStatusLoggedIn());
@@ -43,7 +44,8 @@ function* attemptRefreshOfToken() {
   }
 }
 
-function* handleLogIn( action ) {
+/* eslint-disable consistent-return */
+function* handleLogIn(action) {
   const { email, password } = action.payload;
 
   if (!email || !password) {
@@ -58,19 +60,20 @@ function* handleLogIn( action ) {
       password,
     });
 
-    if ( status !== 201 ) {
+    if (status !== 201) {
       yield put(actions.logInFailed());
     } else {
       const { data: { accessToken, refreshToken } } = body;
 
       yield put(actions.logInSucceeded({ accessToken, refreshToken }));
     }
-  } catch ( e ) {
+  } catch (e) {
     yield put(actions.logInFailed());
   }
 }
+/* eslint-enable consistent-return */
 
-function* handleLogInSucceeded( action ) {
+function handleLogInSucceeded(action) {
   const { accessToken, refreshToken } = action.payload;
 
   accessTokenService.setToken(accessToken, refreshToken);

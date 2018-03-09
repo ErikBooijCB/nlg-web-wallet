@@ -1,8 +1,8 @@
 import React from 'react';
 
 import CircularProgress from 'material-ui/CircularProgress';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import PropTypes        from 'prop-types';
+import styled           from 'styled-components';
 
 
 class PreBoot extends React.Component {
@@ -13,7 +13,7 @@ class PreBoot extends React.Component {
   render() {
     return (
       <CenteredFullPage>
-        <CircularProgress size={ 60 } thickness={ 7 }/>
+        <CircularProgress size={ 60 } thickness={ 7 } />
       </CenteredFullPage>
     );
   }
@@ -28,7 +28,7 @@ const CenteredFullPage = styled.div`
 `;
 
 PreBoot.propTypes = {
-  boot: PropTypes.func.isRequired
+  boot: PropTypes.func.isRequired,
 };
 
 export default PreBoot;

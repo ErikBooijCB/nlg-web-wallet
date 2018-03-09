@@ -1,13 +1,13 @@
 import React from 'react';
 
-import AppBar from 'material-ui/AppBar';
-import PropTypes from 'prop-types';
+import AppBar      from 'material-ui/AppBar';
+import PropTypes   from 'prop-types';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import styled      from 'styled-components';
 
 import LoggedInMenu from './Menu/LoggedIn';
 
-const Header = ( { loggedIn, subTitle } ) => (
+const Header = ({ loggedIn, subTitle = false }) => (
   <AppBar
     iconElementRight={
       loggedIn
@@ -22,7 +22,7 @@ const Header = ( { loggedIn, subTitle } ) => (
 
 const appBarStyle = {
   background: 'linear-gradient(to right, #1169D6, #2AB0FD)',
-  position: 'fixed'
+  position:   'fixed',
 };
 
 const Title = styled.span`
@@ -33,15 +33,17 @@ const SubTitle = styled.span`
   font-weight: 500;
 `;
 
+Header.defaultProps = {
+  subTitle: false,
+};
+
 Header.propTypes = {
   loggedIn: PropTypes.bool.isRequired,
   subTitle: PropTypes.node,
 };
 
-const mapStateToProps = state => {
-  return {
-    loggedIn: state.global.loggedIn,
-  };
-};
+const mapStateToProps = state => ({
+  loggedIn: state.global.loggedIn,
+});
 
 export default connect(mapStateToProps)(Header);

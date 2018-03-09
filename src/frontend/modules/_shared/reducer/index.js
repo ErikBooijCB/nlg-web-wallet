@@ -2,7 +2,7 @@ import * as loginActions from '../../login/actions';
 
 const defaultState = {
   bootCompleted: false,
-  loggedIn: false
+  loggedIn:      false,
 };
 
 export default (state = defaultState, action) => {
@@ -22,6 +22,8 @@ export default (state = defaultState, action) => {
     case loginActions.LOGIN_STATUS_NOT_LOGGED_IN:
       newState.loggedIn = false;
       newState.bootCompleted = true;
+      break;
+    default:
   }
 
   return newState;

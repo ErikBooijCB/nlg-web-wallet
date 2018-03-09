@@ -1,7 +1,8 @@
 import React from 'react';
 
+import PropTypes      from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
+import styled         from 'styled-components';
 
 const NotFound = ({ location }) => (
   <FullPage>
@@ -35,5 +36,11 @@ const Path = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+
+NotFound.propTypes = {
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
 export default withRouter(props => <NotFound { ...props } />);

@@ -13,8 +13,8 @@ export default class {
   }
 
   async refreshToken() {
-    const { status, data } = await doPost('/api/access-tokens/' + this.getAccessToken(), {
-      refresh: this.getRefreshToken()
+    const { status, data } = await doPost(`/api/access-tokens/${this.getAccessToken()}`, {
+      refresh: this.getRefreshToken(),
     });
 
     if (status !== 'ok') {
@@ -35,11 +35,11 @@ export default class {
 
   async validateToken() {
     try {
-      const { status } = await doGet('/api/access-tokens/' + this.getAccessToken());
+      const { status } = await doGet(`/api/access-tokens/${this.getAccessToken()}`);
 
       return status === 200;
     } catch (e) {
       return false;
     }
   }
-};
+}

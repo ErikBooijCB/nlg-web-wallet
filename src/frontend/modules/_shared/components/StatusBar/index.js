@@ -3,9 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StatusBar = () => (
-  <Container>
-
-  </Container>
+  <Container />
 );
 
 const Container = styled.div`

@@ -5,7 +5,7 @@ import HomeScreen from './modules/homescreen/component';
 import Login from './modules/login/component';
 import NotFound from './modules/not-found/component';
 
-export default () => (
+const AppRouter = () => (
   <Router>
     <Switch>
       <Route exact path="/" component={ HomeScreen } />
@@ -14,3 +14,5 @@ export default () => (
     </Switch>
   </Router>
 );
+
+export default AppRouter;

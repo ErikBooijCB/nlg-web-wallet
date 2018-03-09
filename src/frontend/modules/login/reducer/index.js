@@ -1,8 +1,8 @@
 import * as actions from '../actions';
 
 const defaultState = {
-  loggingIn: false,
-  loginFailed: false
+  loggingIn:   false,
+  loginFailed: false,
 };
 
 export default (state = defaultState, action) => {
@@ -21,6 +21,7 @@ export default (state = defaultState, action) => {
       newState.loggingIn = false;
       newState.loginFailed = true;
       break;
+    default:
   }
 
   return newState;
