@@ -26,7 +26,7 @@
     "test": ["@test-static", "@test-unit", "@test-acceptance"],
     "test-acceptance": "./vendor/bin/codecept run api",
     "test-code-style": ["@test-code-style:php", "@test-code-style:js"],
-    "test-code-style:php": "phpcs --standard=ruleset.xml src/backend",
+    "test-code-style:php": "phpcs --standard=ruleset.xml -s src/backend tests/unit/backend tests/fixtures/backend",
     "test-code-style:js": "./node_modules/.bin/eslint src/frontend",
     "test-coverage:clover": "phpunit --coverage-clover=build/logs/clover.xml",
     "test-coverage:html": "phpunit --coverage-html=coverage",

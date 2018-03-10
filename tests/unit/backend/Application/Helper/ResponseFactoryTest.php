@@ -62,7 +62,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @return void
      */
-    public function testSuccessMessage_ShouldReturnResponseWithAlternativeStatusCode_WhenAlternativeStatusCodeIsDefined()
+    public function test_SuccessMessage_ShouldReturnResponseWithAlternativeStatusCode_WhenThatStatusCodeIsDefined()
     {
         $response = ResponseFactory::successMessage('Yay, success', 204);
 

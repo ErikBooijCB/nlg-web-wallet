@@ -19,7 +19,8 @@ class TokenIdentifierTest extends TestCase
      *           ["0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0"]
      *           ["0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdez"]
      */
-    public function test_FromString_ShouldThrowException_WhenIdentifierDoesNotMeetSpecification(string $candidate) {
+    public function test_FromString_ShouldThrowException_WhenIdentifierDoesNotMeetSpecification(string $candidate)
+    {
         self::expectException(InvalidTokenIdentifierException::class);
 
         TokenIdentifier::fromString($candidate);
