@@ -80,7 +80,9 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
 
             $accessTokenData = $statement->fetch();
 
-            if (empty($accessTokenData)) throw new AccessTokenNotFoundException;
+            if (empty($accessTokenData)) {
+                throw new AccessTokenNotFoundException;
+            }
 
             return new AccessToken(
                 TokenIdentifier::fromString($accessTokenData['ACCESS_TOKEN']),

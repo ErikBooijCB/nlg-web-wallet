@@ -39,6 +39,5 @@ class AccessTokenValidator
         } catch (UnableToRetrieveAccessTokenException $exception) {
             return false;
         }
-
     }
 }
