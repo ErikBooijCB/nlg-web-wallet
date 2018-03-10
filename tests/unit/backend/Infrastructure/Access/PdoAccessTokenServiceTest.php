@@ -17,7 +17,7 @@ use GuldenWallet\Backend\Application\Access\UnableToRetrieveAccessTokenException
 use GuldenWallet\Backend\Application\Helper\SystemClock;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use GuldenWallet\Backend\Infrastructure\Access\PdoAccessTokenService;
-use GuldenWallet\Tests\Fixtures\Access\AccessTokenFixture;
+use GuldenWallet\Tests\Support\Fixtures\Access\AccessTokenFixture;
 use PDO;
 use PDOException;
 use PDOStatement;

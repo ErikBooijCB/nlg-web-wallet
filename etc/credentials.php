@@ -11,4 +11,10 @@ return [
         'user' => SecretHelper::read('database.user'),
         'pass' => SecretHelper::read('database.pass'),
     ],
+    'node' => [
+        'host' => SecretHelper::read('node.host'),
+        'port' => SecretHelper::read('node.port'),
+        'user' => SecretHelper::read('node.user'),
+        'pass' => SecretHelper::read('node.pass'),
+    ]
 ];

@@ -15,13 +15,12 @@ use GuldenWallet\Backend\Application\Access\UnableToRefreshTokenException;
 use GuldenWallet\Backend\Application\Access\UnableToRetrieveAccessTokenException;
 use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 use GuldenWallet\Backend\Infrastructure\Controller\AccessTokenHttpController;
-use GuldenWallet\Tests\Fixtures\Access\AccessTokenFixture;
+use GuldenWallet\Tests\Support\Fixtures\Access\AccessTokenFixture;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TheSeer\Tokenizer\TokenCollectionException;
 use Throwable;
 
 /**

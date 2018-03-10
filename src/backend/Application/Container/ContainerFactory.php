@@ -6,6 +6,7 @@ namespace GuldenWallet\Backend\Application\Container;
 use GuldenWallet\Backend\Application\Container\Provider\AccessTokenProvider;
 use GuldenWallet\Backend\Application\Container\Provider\ApplicationProvider;
 use GuldenWallet\Backend\Application\Container\Provider\DatabaseProvider;
+use GuldenWallet\Backend\Application\Container\Provider\NodeProvider;
 use GuldenWallet\Backend\Application\Helper\Constant\Constant;
 use GuldenWallet\Backend\Application\Helper\Constant\GlobalConstant;
 use League\Container\Container;
@@ -31,6 +32,7 @@ class ContainerFactory
         $container->addServiceProvider(AccessTokenProvider::class);
         $container->addServiceProvider(ApplicationProvider::class);
         $container->addServiceProvider(DatabaseProvider::class);
+        $container->addServiceProvider(NodeProvider::class);
 
         return $container;
     }

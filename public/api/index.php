@@ -7,6 +7,7 @@ use GuldenWallet\Backend\Application\Helper\Constant\GlobalConstant;
 use GuldenWallet\Backend\Application\Middleware\ExceptionHandlingMiddleware;
 use GuldenWallet\Backend\Application\Middleware\NotFoundHandlingMiddleware;
 use GuldenWallet\Backend\Infrastructure\Controller\AccessTokenHttpController;
+use GuldenWallet\Backend\Infrastructure\Controller\NodeInformationHttpController;
 use Slim\App;
 
 date_default_timezone_set('UTC');
@@ -19,10 +20,10 @@ GlobalConstant::write(Constant::APP_ROOT, realpath(ROOT_PATH));
 GlobalConstant::write(Constant::CONFIGURATION_DIR, realpath(ROOT_PATH . '/etc'));
 GlobalConstant::write(Constant::LOG_DIR, realpath(ROOT_PATH . '/logs'));
 
-$envFile = __DIR__ . '/../.ENV';
+$envFile = ROOT_PATH . '.ENV';
 
 if (file_exists($envFile) && is_readable($envFile)) {
-    GlobalConstant::write(Constant::ENVIRONMENT, trim(file_get_contents(__DIR__ . '/../.ENV')));
+    GlobalConstant::write(Constant::ENVIRONMENT, trim(file_get_contents($envFile)));
 } else {
     GlobalConstant::write(Constant::ENVIRONMENT, 'production');
 }
@@ -41,5 +42,10 @@ $app->delete('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::clas
 $app->get('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':retrieve');
 $app->post('/access-tokens', AccessTokenHttpController::class . ':create');
 $app->post('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class . ':refresh');
+
+/*******************************************/
+/* NODE                                     /
+/*******************************************/
+$app->get('/node', NodeInformationHttpController::class . ':overview');
 
 $app->run();

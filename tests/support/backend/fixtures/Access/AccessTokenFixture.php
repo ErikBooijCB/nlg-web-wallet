@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace GuldenWallet\Tests\Fixtures\Access;
+namespace GuldenWallet\Tests\Support\Fixtures\Access;
 
 use DateTimeImmutable;
 use DateTimeInterface;

@@ -30,7 +30,11 @@ class SecretHelper
     private static function loadSecrets()
     {
         if (empty(self::$values)) {
-            self::$values = include __DIR__ . '/secrets.php';
+            if (file_exists(__DIR__ . '/secrets.php') && is_readable(__DIR__ . '/secrets.php')) {
+                self::$values = include __DIR__ . '/secrets.php';
+            } else {
+                self::$values = include __DIR__ . '/secrets.php.dist';
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ use GuldenWallet\Backend\Application\Access\AccessTokenValidator;
 use GuldenWallet\Backend\Application\Access\TokenIdentifier;
 use GuldenWallet\Backend\Application\Access\UnableToRetrieveAccessTokenException;
 use GuldenWallet\Backend\Application\Helper\SystemClock;
-use GuldenWallet\Tests\Fixtures\Access\AccessTokenFixture;
+use GuldenWallet\Tests\Support\Fixtures\Access\AccessTokenFixture;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
