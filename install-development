@@ -11,7 +11,12 @@ printf "\n${GREEN}Done, containers have been built!${NC}\n"
 
 printf "\n === ${BLUE}Installing dependencies${NC} === \n\n"
 composer install
+npm install
 printf "\n${GREEN}Done, dependencies have been installed!${NC}\n"
+
+printf "\n === ${BLUE}Build frontend code${NC} === \n\n"
+npm run build
+printf "\n${GREEN}Done, frontend code has been built!${NC}\n"
 
 printf "\n === ${BLUE}Waiting for database container to become available${NC} === \n\n"
 while ! mysqladmin ping -h127.0.0.1 --silent; do
