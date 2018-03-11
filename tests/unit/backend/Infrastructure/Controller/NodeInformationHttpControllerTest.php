@@ -39,6 +39,7 @@ class NodeInformationHttpControllerTest extends TestCase
         self::assertArrayHasKey('balance', $parsedResponse['data']);
         self::assertArrayHasKey('blocks', $parsedResponse['data']);
         self::assertArrayHasKey('connections', $parsedResponse['data']);
+        self::assertArrayHasKey('healthy', $parsedResponse['data']);
         self::assertArrayHasKey('testnet', $parsedResponse['data']);
         self::assertArrayHasKey('version', $parsedResponse['data']);
     }

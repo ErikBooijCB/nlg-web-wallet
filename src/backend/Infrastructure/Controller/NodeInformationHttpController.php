@@ -33,6 +33,7 @@ class NodeInformationHttpController
                 'balance' => $nodeInformation->getBalance(),
                 'blocks' => $nodeInformation->getBlocks(),
                 'connections' => $nodeInformation->getConnections(),
+                'healthy' => $nodeInformation->isHealthy(),
                 'testnet' => $nodeInformation->isTestNet(),
                 'version' => $nodeInformation->getVersion()
             ]);
