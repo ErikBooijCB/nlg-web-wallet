@@ -151,6 +151,14 @@ class NodeOverview
     /**
      * @return bool
      */
+    public function isHealthy(): bool
+    {
+        return $this->connections >= 6;
+    }
+
+    /**
+     * @return bool
+     */
     public function isTestnet(): bool
     {
         return $this->testnet;
