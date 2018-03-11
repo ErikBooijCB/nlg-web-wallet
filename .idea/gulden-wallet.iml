@@ -6,9 +6,21 @@
       <sourceFolder url="file://$MODULE_DIR$/tests/unit/backend" isTestSource="true" packagePrefix="GuldenWallet\Tests\Unit\Backend" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests/support/backend/fixtures" isTestSource="true" packagePrefix="GuldenWallet\Tests\Support\Fixtures" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests/support/backend/helpers" isTestSource="true" packagePrefix="GuldenWallet\Tests\Support\Helpers" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/cli" isTestSource="false" packagePrefix="GuldenWallet\CLI" generated="true" />
       <excludeFolder url="file://$MODULE_DIR$/public" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/codeception/phpunit-wrapper" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="PHP" type="php">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/vendor/codeception/phpunit-wrapper" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/vendor/codeception/phpunit-wrapper" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

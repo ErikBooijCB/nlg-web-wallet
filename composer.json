@@ -2,6 +2,7 @@
   "autoload": {
     "psr-4": {
       "GuldenWallet\\Backend\\": "src/backend",
+      "GuldenWallet\\CLI\\": "src/cli",
       "GuldenWallet\\Tests\\Unit\\Backend\\": "tests/unit/backend",
       "GuldenWallet\\Tests\\Support\\Fixtures\\": "tests/support/backend/fixtures",
       "GuldenWallet\\Tests\\Support\\Helpers\\": "tests/support/backend/helpers"
@@ -12,6 +13,7 @@
     "league/container": "^2.4",
     "psr/container": "^1.0",
     "slim/slim": "^3.9",
+    "symfony/console": "^3.4",
     "zendframework/zend-diactoros": "^1.7"
   },
   "require-dev": {

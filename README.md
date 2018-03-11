@@ -49,6 +49,8 @@ rpcallowip=192.168.0.1/24
 ### Credentials
 By default the application will use the credentials in `etc/secrets.php.dist`, but you'll probably need to alter them to support your own Gulden node. **Do not** alter the `.dist` file, because you might accidentally check your credentials into version control. Instead copy the file to `etc/secrets.php` and put your credentials in there. The file will automatically be picked up by the application, but is in .gitignore to prevent checking it in.
 
+The default username is `john@doe.com` and the password is `testtest`.
+
 ### Testing
 If you want to make sure your code passes continuous integration before submitting a Pull Request, you can run
 
