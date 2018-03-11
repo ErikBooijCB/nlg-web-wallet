@@ -33,6 +33,7 @@ const Message = styled.div`
 const Path = styled.div`
   font-weight: 500;
   overflow: hidden;
+  font-family: Roboto Mono;
   text-overflow: ellipsis;
   white-space: nowrap;
 `;

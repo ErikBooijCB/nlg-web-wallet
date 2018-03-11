@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import styled      from 'styled-components';
 
 import LoggedInMenu from './Menu/LoggedIn';
+import theme from '../../../../theme';
 
 const Header = ({ loggedIn, subTitle = false }) => (
   <AppBar
@@ -21,7 +22,7 @@ const Header = ({ loggedIn, subTitle = false }) => (
 );
 
 const appBarStyle = {
-  background: 'linear-gradient(to right, #1169D6, #2AB0FD)',
+  background: `linear-gradient(to right, ${theme.palette.primary1Color}, ${theme.palette.primary2Color})`,
   position:   'fixed',
 };
 

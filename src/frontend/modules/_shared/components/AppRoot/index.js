@@ -10,21 +10,21 @@ import { checkLoginStatus }   from '../../../login/actions';
 import Login                  from '../../../login/component';
 import Router                 from '../../../../router';
 
-const renderBootCompleted = loggedIn => (
-  <div>
-    {
-      loggedIn
-        ? <Router />
-        : <Login />
-    }
-  </div>
-);
-
 const AppRoot = ({ boot, bootCompleted, loggedIn }) => (
   <FullScreen>
     { bootCompleted
       ? renderBootCompleted(loggedIn)
       : <PreBoot boot={ boot } /> }
+  </FullScreen>
+);
+
+const renderBootCompleted = loggedIn => (
+  <FullScreen>
+    {
+      loggedIn
+        ? <Router />
+        : <Login />
+    }
   </FullScreen>
 );
 
