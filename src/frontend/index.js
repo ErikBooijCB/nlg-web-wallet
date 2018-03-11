@@ -9,7 +9,7 @@ import createSagaMiddleware                      from 'redux-saga';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import AppRoot            from './modules/_shared/components/AppRoot';
-import statusBarSaga from './modules/_shared/saga/statusBar';
+import statusBarSaga      from './modules/_shared/saga/statusBar';
 import authenticationSaga from './modules/login/saga';
 import rootReducer        from './reducer';
 import theme              from './theme';

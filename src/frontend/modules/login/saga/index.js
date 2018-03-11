@@ -1,8 +1,8 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 
-import * as actions       from '../actions';
-import AccessTokenService from '../../_shared/services/AccessTokenService';
-import { doPost }         from '../../_shared/utilities/requestHelper';
+import * as actions         from '../actions';
+import AccessTokenService   from '../../_shared/services/AccessTokenService';
+import { doDelete, doPost } from '../../_shared/utilities/requestHelper';
 
 const accessTokenService = new AccessTokenService();
 
@@ -79,11 +79,35 @@ function handleLogInSucceeded(action) {
   accessTokenService.setToken(accessToken, refreshToken);
 }
 
+/* eslint-disable consistent-return */
+function* handleLogOff() {
+  try {
+    const accessToken = accessTokenService.getAccessToken();
+
+    const { status } = yield call(doDelete, `/api/access-tokens/${accessToken}`);
+
+    if (status !== 204) {
+      yield put(actions.logOffFailed());
+    } else {
+      yield put(actions.logOffSucceeded());
+    }
+  } catch (e) {
+    yield put(actions.logOffFailed());
+  }
+}
+/* eslint-enable consistent-return */
+
+function handleLogOffSucceeded() {
+  accessTokenService.removeTokens();
+}
+
 function* authenticationSaga() {
   yield all([
     takeLatest(actions.LOG_IN, handleLogIn),
     takeLatest(actions.LOG_IN_SUCCEEDED, handleLogInSucceeded),
     takeLatest(actions.CHECK_LOGIN_STATUS, handleCheckLoginStatus),
+    takeLatest(actions.LOG_OFF, handleLogOff),
+    takeLatest(actions.LOG_OFF_SUCCEEDED, handleLogOffSucceeded),
   ]);
 }
 

@@ -28,6 +28,11 @@ export default class {
     return accessToken;
   }
 
+  removeTokens() {
+    window.localStorage.removeItem(accessTokenStorageKey);
+    window.localStorage.removeItem(refreshTokenStorageKey);
+  }
+
   setToken(accessToken, refreshToken) {
     window.localStorage.setItem(accessTokenStorageKey, accessToken);
     window.localStorage.setItem(refreshTokenStorageKey, refreshToken);

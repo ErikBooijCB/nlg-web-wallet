@@ -23,7 +23,9 @@ const Header = ({ loggedIn, subTitle = false }) => (
 
 const appBarStyle = {
   background: `linear-gradient(to right, ${theme.palette.primary1Color}, ${theme.palette.primary2Color})`,
+  left:       0,
   position:   'fixed',
+  top:        0,
 };
 
 const Title = styled.span`

@@ -7,7 +7,7 @@ import PreBoot                from '../PreBoot';
 import { fetchStatusBarData } from '../../actions/statusBar';
 import FullScreen             from '../../components/FullScreen';
 import { checkLoginStatus }   from '../../../login/actions';
-import Login                  from '../../../login/component';
+import Login                  from '../../../login/component/login';
 import Router                 from '../../../../router';
 
 const AppRoot = ({ boot, bootCompleted, loggedIn }) => (

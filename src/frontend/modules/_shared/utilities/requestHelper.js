@@ -1,3 +1,17 @@
+export const doDelete = async url => {
+  const response = await fetch(url, {
+    cache:    'no-cache',
+    method:   'DELETE',
+    mode:     'cors',
+    redirect: 'follow',
+    referrer: 'no-referrer',
+  });
+
+  return {
+    status: response.status,
+  };
+};
+
 export const doGet = async url => {
   const response = await fetch(url, {
     cache:    'no-cache',

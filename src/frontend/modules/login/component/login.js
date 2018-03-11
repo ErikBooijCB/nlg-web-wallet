@@ -8,11 +8,12 @@ import { TextField }          from 'redux-form-material-ui';
 import styled                 from 'styled-components';
 
 import FlatButton     from 'material-ui/FlatButton';
-import LinearProgress from 'material-ui/LinearProgress';
 import Paper          from 'material-ui/Paper';
 import SnackBar       from 'material-ui/Snackbar';
 
 import * as actions from '../actions';
+import FullScreen   from '../../_shared/components/FullScreen';
+import Loader       from '../../_shared/components/Loader';
 import theme        from '../../../theme';
 
 const reduxFormSettings = {
@@ -29,7 +30,7 @@ const Login = ({
   logIn,
   loginFailed,
 }) => (
-  <div style={ containerStyle }>
+  <FullScreen>
     <SnackBar
       autoHideDuration={ 3000 }
       bodyStyle={ { background: '#f88' } }
@@ -61,30 +62,36 @@ const Login = ({
             type="password"
           />
         </FormContent>
-        <LinearProgress
-          color="#f90"
-          mode="indeterminate"
-          style={ { background: '#fff', marginTop: '20px', opacity: loggingIn ? 1 : 0 } }
+        <Loader
+          active={ loggingIn }
         />
-        <div style={ buttonsStyle }>
-          <FlatButton
+        <Buttons>
+          <Button
             primary
             label="Log In"
-            style={ buttonStyle }
             tabIndex={ 0 }
             type="submit"
           />
-          <FlatButton
+          <Button
             secondary
             label="Password Forgotten"
-            style={ buttonStyle }
             tabIndex={ 0 }
           />
-        </div>
+        </Buttons>
       </form>
     </Paper>
-  </div>
+  </FullScreen>
 );
+
+const Button = styled(FlatButton)`
+  float: right;
+`;
+
+const Buttons = styled.div`
+  background: #f8f8f8;
+  overflow:   hidden;
+  padding:    10px;
+`;
 
 const FormContent = styled.div`
   padding: 20px;
@@ -100,24 +107,6 @@ const PaperTitle = styled.h1`
   justify-content: center;
   padding: 20px;
 `;
-
-const buttonStyle = {
-  float: 'right',
-};
-
-const buttonsStyle = {
-  background: '#f8f8f8',
-  overflow:   'hidden',
-  padding:    '10px',
-};
-
-const containerStyle = {
-  alignItems:     'center',
-  display:        'flex',
-  height:         '100%',
-  justifyContent: 'center',
-  width:          '100%',
-};
 
 const fieldStyle = {
   width: '100%',

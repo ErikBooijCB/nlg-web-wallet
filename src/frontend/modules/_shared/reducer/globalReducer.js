@@ -23,6 +23,9 @@ export default (state = defaultState, action) => {
       newState.loggedIn = false;
       newState.bootCompleted = true;
       break;
+    case loginActions.LOG_OFF_SUCCEEDED:
+      newState.loggedIn = false;
+      break;
     default:
   }
 
