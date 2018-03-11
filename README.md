@@ -1,10 +1,10 @@
 # Gulden Web Wallet
 This application provides a simple to use interface to a Gulden node, available in your browser. If you are, for instance, running a Gulden node on a Raspberry Pi in order to take part in [witnessing](https://gulden.com/pow2), this application will allow you to maintain your wallet with ease, while providing insights into your witnessing proceeds.
 
-## Code Quality
+## ✅ Code Quality
 [![Build Status](https://travis-ci.org/ErikBooij/nlg-web-wallet.svg?branch=master)](https://travis-ci.org/ErikBooij/nlg-web-wallet) [![Maintainability](https://api.codeclimate.com/v1/badges/92dc6479741859b55c28/maintainability)](https://codeclimate.com/github/ErikBooij/nlg-web-wallet/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/92dc6479741859b55c28/test_coverage)](https://codeclimate.com/github/ErikBooij/nlg-web-wallet/test_coverage)
 
-## Contributing
+## 👨‍👩‍👧‍👦 Contributing
 Pull Requests to this repository are more than welcome. Below you will find instructions on how to set up a development environment.
 
 To set up a local development environment, you'll need to have the following software installed:
@@ -46,6 +46,9 @@ Depending on your configuration, you might also need to add another line to actu
 rpcallowip=192.168.0.1/24
 ```
 
+### Credentials
+By default the application will use the credentials in `etc/secrets.php.dist`, but you'll probably need to alter them to support your own Gulden node. **Do not** alter the `.dist` file, because you might accidentally check your credentials into version control. Instead copy the file to `etc/secrets.php` and put your credentials in there. The file will automatically be picked up by the application, but is in .gitignore to prevent checking it in.
+
 ### Testing
 If you want to make sure your code passes continuous integration before submitting a Pull Request, you can run
 
@@ -74,5 +77,5 @@ The frontend is built in [React](https://reactjs.org/) and relies heavily on [Ma
 $ npm start
 ```
 
-## Installation instructions
+## 👩‍💻 Installation instructions
 _Instructions will follow_
