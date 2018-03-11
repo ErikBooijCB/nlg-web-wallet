@@ -16,7 +16,7 @@ class NodeClient implements NodeClientInterface
     /** @var Client */
     private $httpClient;
 
-    /** @var  */
+    /** @var */
     private $subClients = [];
 
     /**

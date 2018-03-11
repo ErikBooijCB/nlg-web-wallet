@@ -9,8 +9,8 @@ use GuldenWallet\Backend\Domain\Access\InvalidCredentialsException;
 interface AccessTokenServiceInterface
 {
     /**
-     * @param string       $emailAddress
-     * @param string       $password
+     * @param string $emailAddress
+     * @param string $password
      * @param DateInterval $validity
      *
      * @return mixed

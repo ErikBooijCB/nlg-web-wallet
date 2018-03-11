@@ -58,8 +58,8 @@ class AccessTokenHttpController
         }
 
         return ResponseFactory::success([
-            'accessToken'  => $accessToken->getTokenIdentifier()->toString(),
-            'expires'      => $accessToken->getExpires()->format(DateTime::ATOM),
+            'accessToken' => $accessToken->getTokenIdentifier()->toString(),
+            'expires' => $accessToken->getExpires()->format(DateTime::ATOM),
             'refreshToken' => $accessToken->getRefreshTokenIdentifier()->toString(),
         ], 201);
     }
@@ -84,8 +84,8 @@ class AccessTokenHttpController
             $newAccessToken = $this->accessTokenService->refreshToken($accessTokenIdentifier, $refreshToken);
 
             return ResponseFactory::success([
-                'accessToken'  => $newAccessToken->getTokenIdentifier()->toString(),
-                'expires'      => $newAccessToken->getExpires()->format(DateTime::ATOM),
+                'accessToken' => $newAccessToken->getTokenIdentifier()->toString(),
+                'expires' => $newAccessToken->getExpires()->format(DateTime::ATOM),
                 'refreshToken' => $newAccessToken->getRefreshTokenIdentifier()->toString(),
             ], 201);
         } catch (InvalidTokenIdentifierException $exception) {

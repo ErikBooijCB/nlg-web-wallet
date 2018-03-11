@@ -58,16 +58,16 @@ class ContainerFactory
         $config = [
             'settings' => [
                 'debug' => true,
-                'addContentLengthHeader'            => true,
+                'addContentLengthHeader' => true,
                 'determineRouteBeforeAppMiddleware' => true,
-                'displayErrorDetails'               => true,
-                'httpVersion'                       => '1.1',
-                'logger'                            => [
+                'displayErrorDetails' => true,
+                'httpVersion' => '1.1',
+                'logger' => [
                     'name' => 'gulden-wallet',
                 ],
-                'outputBuffering'                   => 'append',
-                'responseChunkSize'                 => 4096,
-                'routerCacheFile'                   => false,
+                'outputBuffering' => 'append',
+                'responseChunkSize' => 4096,
+                'routerCacheFile' => false,
             ],
         ];
 

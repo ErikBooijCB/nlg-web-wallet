@@ -14,8 +14,8 @@ class ExceptionHandlingMiddleware
 {
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable               $next
+     * @param ResponseInterface $response
+     * @param callable $next
      *
      * @return ResponseInterface
      */

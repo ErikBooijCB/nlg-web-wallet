@@ -15,7 +15,7 @@ class AccessTokenValidator
 
     /**
      * @param AccessTokenServiceInterface $accessTokenService
-     * @param SystemClock                 $systemClock
+     * @param SystemClock $systemClock
      */
     public function __construct(AccessTokenServiceInterface $accessTokenService, SystemClock $systemClock)
     {

@@ -10,15 +10,12 @@ class NodeClientCredentials
 {
     /** @var string */
     private $host;
-
-    /** @var int */
-    private $port;
-
-    /** @var string */
-    private $username;
-
     /** @var string */
     private $password;
+    /** @var int */
+    private $port;
+    /** @var string */
+    private $username;
 
     /**
      * @param string $host

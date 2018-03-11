@@ -69,6 +69,22 @@ class NodeOverview
     }
 
     /**
+     * @param string $argument1
+     * @param string $argument2
+     * @param string $argument3
+     * @param string $argument4
+     * @return string
+     */
+    public function doSomethingWithAFewArguments(
+        string $argument1,
+        string $argument2,
+        string $argument3,
+        string $argument4
+    ): string {
+        return "{$argument1}.{$argument2}.{$argument3}.{$argument4}";
+    }
+
+    /**
      * @return float
      */
     public function getBalance(): float
@@ -117,14 +133,6 @@ class NodeOverview
     }
 
     /**
-     * @return bool
-     */
-    public function isTestnet(): bool
-    {
-        return $this->testnet;
-    }
-
-    /**
      * @return string
      */
     public function getVersion(): string
@@ -138,5 +146,13 @@ class NodeOverview
     public function getWalletVersion(): int
     {
         return $this->walletVersion;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTestnet(): bool
+    {
+        return $this->testnet;
     }
 }

@@ -23,9 +23,9 @@ class PersistNewTokenStatement implements PreparableStatement
     private $refreshToken;
 
     /**
-     * @param TokenIdentifier   $accessToken
+     * @param TokenIdentifier $accessToken
      * @param DateTimeInterface $expiration
-     * @param TokenIdentifier   $refreshToken
+     * @param TokenIdentifier $refreshToken
      */
     public function __construct(
         TokenIdentifier $accessToken,

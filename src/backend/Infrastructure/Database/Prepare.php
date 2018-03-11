@@ -9,7 +9,7 @@ use PDOStatement;
 class Prepare
 {
     /**
-     * @param PDO                 $PDO
+     * @param PDO $PDO
      * @param PreparableStatement $statement
      *
      * @return PDOStatement

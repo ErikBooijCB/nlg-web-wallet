@@ -46,7 +46,7 @@ class GlobalConstant
 
     /**
      * @param string $constantName
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return void
      * @throws AlreadyDefinedConstantException

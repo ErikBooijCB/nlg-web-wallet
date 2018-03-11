@@ -31,7 +31,7 @@ class PdoAccessTokenService implements AccessTokenServiceInterface
     private $pdo;
 
     /**
-     * @param PDO         $pdo
+     * @param PDO $pdo
      */
     public function __construct(PDO $pdo)
     {

@@ -27,7 +27,7 @@ class InvalidTokenIdentifierException extends \Exception
         return new static(
             sprintf(
                 "'%s' cannot be used as a token identifier because it's length " .
-                  "of %d characters does not meet the specification",
+                "of %d characters does not meet the specification",
                 $identifier,
                 strlen($identifier)
             )

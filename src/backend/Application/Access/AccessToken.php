@@ -20,9 +20,9 @@ class AccessToken
     private $tokenIdentifier;
 
     /**
-     * @param TokenIdentifier   $tokenIdentifier
+     * @param TokenIdentifier $tokenIdentifier
      * @param DateTimeInterface $expires
-     * @param TokenIdentifier   $refreshToken
+     * @param TokenIdentifier $refreshToken
      */
     public function __construct(
         TokenIdentifier $tokenIdentifier,

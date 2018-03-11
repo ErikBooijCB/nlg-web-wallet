@@ -31,6 +31,20 @@ class NodeResponse
     }
 
     /**
+     * @param Throwable $throwable
+     * @return NodeResponse
+     */
+    public static function forFailedRequest(Throwable $throwable): self
+    {
+        $nodeResponse = new static;
+
+        $nodeResponse->errorInfo = $throwable->getMessage();
+        $nodeResponse->status = static::FAILURE;
+
+        return $nodeResponse;
+    }
+
+    /**
      * @param ResponseInterface $response
      * @return NodeResponse
      */
@@ -42,20 +56,6 @@ class NodeResponse
 
         $nodeResponse->status = static::SUCCESS;
         $nodeResponse->data = is_array($data) ? $data : [$data];
-
-        return $nodeResponse;
-    }
-
-    /**
-     * @param Throwable $throwable
-     * @return NodeResponse
-     */
-    public static function forFailedRequest(Throwable $throwable): self
-    {
-        $nodeResponse = new static;
-
-        $nodeResponse->errorInfo = $throwable->getMessage();
-        $nodeResponse->status = static::FAILURE;
 
         return $nodeResponse;
     }

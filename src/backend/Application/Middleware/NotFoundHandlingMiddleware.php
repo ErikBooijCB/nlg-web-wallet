@@ -6,14 +6,13 @@ namespace GuldenWallet\Backend\Application\Middleware;
 use GuldenWallet\Backend\Application\Helper\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 class NotFoundHandlingMiddleware
 {
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable               $next
+     * @param ResponseInterface $response
+     * @param callable $next
      *
      * @return ResponseInterface
      */

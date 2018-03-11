@@ -4,7 +4,6 @@ import CircularProgress from 'material-ui/CircularProgress';
 import PropTypes        from 'prop-types';
 import styled           from 'styled-components';
 
-
 class PreBoot extends React.Component {
   componentDidMount() {
     this.props.boot();

@@ -1,14 +1,14 @@
 import React from 'react';
 
-import PropTypes              from 'prop-types';
-import { connect }            from 'react-redux';
-import { bindActionCreators } from 'redux';
+import PropTypes   from 'prop-types';
+import { connect } from 'react-redux';
 
-import { checkLoginStatus } from '../../../login/actions';
-import FullScreen           from '../../components/FullScreen';
-import Login                from '../../../login/component';
-import PreBoot              from '../PreBoot';
-import Router               from '../../../../router';
+import PreBoot                from '../PreBoot';
+import { fetchStatusBarData } from '../../actions/statusBar';
+import FullScreen             from '../../components/FullScreen';
+import { checkLoginStatus }   from '../../../login/actions';
+import Login                  from '../../../login/component';
+import Router                 from '../../../../router';
 
 const renderBootCompleted = loggedIn => (
   <div>
@@ -33,11 +33,12 @@ const mapStateToProps = state => ({
   loggedIn:      state.global.loggedIn,
 });
 
-const mapDispatchToProps = dispatch => (
-  bindActionCreators({
-    boot: checkLoginStatus,
-  }, dispatch)
-);
+const mapDispatchToProps = dispatch => ({
+  boot: () => {
+    dispatch(checkLoginStatus());
+    dispatch(fetchStatusBarData());
+  },
+});
 
 AppRoot.propTypes = {
   boot:          PropTypes.func.isRequired,

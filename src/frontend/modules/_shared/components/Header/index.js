@@ -26,11 +26,11 @@ const appBarStyle = {
 };
 
 const Title = styled.span`
-  font-weight: 300;
+  font-weight: 500;
 `;
 
 const SubTitle = styled.span`
-  font-weight: 500;
+  font-weight: 300;
 `;
 
 Header.defaultProps = {

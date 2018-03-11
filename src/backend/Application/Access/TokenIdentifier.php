@@ -60,7 +60,7 @@ final class TokenIdentifier
     {
         try {
             $identifier = random_bytes((int)floor(static::HEX_LENGTH / 2));
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
         } catch (Exception $exception) {
             return static::generate();
         }

@@ -15,36 +15,8 @@ class ResponseFactory
     const STATUS_OK = 'ok';
 
     /**
-     * @param array $data
-     * @param int   $statusCode
-     *
-     * @return ResponseInterface
-     */
-    public static function success(array $data, $statusCode = 200): ResponseInterface
-    {
-        return new JsonResponse([
-            'status' => static::STATUS_OK,
-            'data'   => $data,
-        ], $statusCode);
-    }
-
-    /**
      * @param string $message
-     * @param int    $statusCode
-     *
-     * @return ResponseInterface
-     */
-    public static function successMessage(string $message, int $statusCode = 200): ResponseInterface
-    {
-        return new JsonResponse([
-            'status' => static::STATUS_OK,
-            'message' => $message
-        ], $statusCode);
-    }
-
-    /**
-     * @param string $message
-     * @param int    $statusCode
+     * @param int $statusCode
      *
      * @return ResponseInterface
      */
@@ -52,6 +24,34 @@ class ResponseFactory
     {
         return new JsonResponse([
             'status' => static::STATUS_ERROR,
+            'message' => $message
+        ], $statusCode);
+    }
+
+    /**
+     * @param array $data
+     * @param int $statusCode
+     *
+     * @return ResponseInterface
+     */
+    public static function success(array $data, $statusCode = 200): ResponseInterface
+    {
+        return new JsonResponse([
+            'status' => static::STATUS_OK,
+            'data' => $data,
+        ], $statusCode);
+    }
+
+    /**
+     * @param string $message
+     * @param int $statusCode
+     *
+     * @return ResponseInterface
+     */
+    public static function successMessage(string $message, int $statusCode = 200): ResponseInterface
+    {
+        return new JsonResponse([
+            'status' => static::STATUS_OK,
             'message' => $message
         ], $statusCode);
     }

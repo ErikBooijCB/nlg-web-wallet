@@ -13,7 +13,10 @@ const FullScreenDiv = styled.div`
 `;
 
 FullScreen.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.node).isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
 };
 
 export default FullScreen;

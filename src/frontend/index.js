@@ -9,13 +9,14 @@ import createSagaMiddleware                      from 'redux-saga';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import AppRoot            from './modules/_shared/components/AppRoot';
-import authenticationSaga from './modules/login/sagas';
+import statusBarSaga from './modules/_shared/saga/statusBar';
+import authenticationSaga from './modules/login/saga';
 import rootReducer        from './reducer';
 import theme              from './theme';
 
 // eslint-disable-next-line no-underscore-dangle
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const sagaMiddleware   = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
   rootReducer,
@@ -24,6 +25,7 @@ const store = createStore(
 );
 
 sagaMiddleware.run(authenticationSaga);
+sagaMiddleware.run(statusBarSaga);
 
 ReactDOM.render(
   (
