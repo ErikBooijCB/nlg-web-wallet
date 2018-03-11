@@ -46,6 +46,10 @@ module.exports = {
       'error',
       'unix',
     ],
+    'max-len':                      [
+      'error',
+      { code: 120 },
+    ],
     'no-multi-spaces':              [
       'error',
       {
@@ -57,7 +61,35 @@ module.exports = {
       },
     ],
     'no-use-before-define':         [ 0 ],
-    'object-curly-spacing':         [ 'error', 'always' ],
+    'object-curly-newline':         [
+      'error',
+      {
+        ObjectExpression:  {
+          consistent:    true,
+          multiline:     true,
+          minProperties: 8,
+        },
+        ObjectPattern:     {
+          consistent:    true,
+          multiline:     true,
+          minProperties: 8,
+        },
+        ImportDeclaration: {
+          consistent:    true,
+          multiline:     true,
+          minProperties: 8,
+        },
+        ExportDeclaration: {
+          consistent:    true,
+          multiline:     true,
+          minProperties: 8,
+        },
+      },
+    ],
+    'object-curly-spacing':         [
+      'error',
+      'always',
+    ],
     quotes:                         [
       'error',
       'single',

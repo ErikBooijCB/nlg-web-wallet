@@ -2,19 +2,21 @@ import React from 'react';
 
 import PropTypes              from 'prop-types';
 import { connect }            from 'react-redux';
+import { Link }               from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { Field, reduxForm }   from 'redux-form';
 import { TextField }          from 'redux-form-material-ui';
 import styled                 from 'styled-components';
 
-import FlatButton     from 'material-ui/FlatButton';
-import Paper          from 'material-ui/Paper';
-import SnackBar       from 'material-ui/Snackbar';
+import Paper    from 'material-ui/Paper';
+import SnackBar from 'material-ui/Snackbar';
 
+import Button       from './Button';
+import Buttons      from './Buttons';
+import PaperTitle   from './PaperTitle';
 import * as actions from '../actions';
 import FullScreen   from '../../_shared/components/FullScreen';
 import Loader       from '../../_shared/components/Loader';
-import theme        from '../../../theme';
 
 const reduxFormSettings = {
   form:          'logIn',
@@ -24,12 +26,7 @@ const reduxFormSettings = {
   },
 };
 
-const Login = ({
-  handleSubmit,
-  loggingIn,
-  logIn,
-  loginFailed,
-}) => (
+const Login = ({ handleSubmit, loggingIn, logIn, loginFailed }) => (
   <FullScreen>
     <SnackBar
       autoHideDuration={ 3000 }
@@ -74,6 +71,7 @@ const Login = ({
           />
           <Button
             secondary
+            containerElement={ <Link href="/password-forgotten" to="/password-forgotten" /> }
             label="Password Forgotten"
             tabIndex={ 0 }
           />
@@ -83,28 +81,7 @@ const Login = ({
   </FullScreen>
 );
 
-const Button = styled(FlatButton)`
-  float: right;
-`;
-
-const Buttons = styled.div`
-  background: #f8f8f8;
-  overflow:   hidden;
-  padding:    10px;
-`;
-
 const FormContent = styled.div`
-  padding: 20px;
-`;
-
-const PaperTitle = styled.h1`
-  align-items: center;
-  background: linear-gradient(to right, ${theme.palette.primary1Color}, ${theme.palette.primary2Color});
-  color: #fff;
-  display: flex;
-  font-size: 18px;
-  font-weight: 400;
-  justify-content: center;
   padding: 20px;
 `;
 

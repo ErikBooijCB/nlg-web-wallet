@@ -7,24 +7,13 @@ import PreBoot                from '../PreBoot';
 import { fetchStatusBarData } from '../../actions/statusBar';
 import FullScreen             from '../../components/FullScreen';
 import { checkLoginStatus }   from '../../../login/actions';
-import Login                  from '../../../login/component/login';
 import Router                 from '../../../../router';
 
 const AppRoot = ({ boot, bootCompleted, loggedIn }) => (
   <FullScreen>
     { bootCompleted
-      ? renderBootCompleted(loggedIn)
+      ? <Router loggedIn={ loggedIn } />
       : <PreBoot boot={ boot } /> }
-  </FullScreen>
-);
-
-const renderBootCompleted = loggedIn => (
-  <FullScreen>
-    {
-      loggedIn
-        ? <Router />
-        : <Login />
-    }
   </FullScreen>
 );
 
