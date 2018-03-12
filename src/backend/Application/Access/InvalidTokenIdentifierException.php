@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace GuldenWallet\Backend\Application\Access;
 
-class InvalidTokenIdentifierException extends \Exception
+use Exception;
+
+class InvalidTokenIdentifierException extends Exception
 {
     /**
      * @param string $identifier

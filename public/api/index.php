@@ -8,6 +8,7 @@ use GuldenWallet\Backend\Application\Middleware\ExceptionHandlingMiddleware;
 use GuldenWallet\Backend\Application\Middleware\NotFoundHandlingMiddleware;
 use GuldenWallet\Backend\Infrastructure\Controller\AccessTokenHttpController;
 use GuldenWallet\Backend\Infrastructure\Controller\NodeInformationHttpController;
+use GuldenWallet\Backend\Infrastructure\Controller\SettingsHttpController;
 use Slim\App;
 
 date_default_timezone_set('UTC');
@@ -47,5 +48,12 @@ $app->post('/access-tokens/{token:[a-f0-9]+}', AccessTokenHttpController::class 
 /* NODE                                     /
 /*******************************************/
 $app->get('/node', NodeInformationHttpController::class . ':overview');
+
+/*******************************************/
+/* SETTINGS                                 /
+/*******************************************/
+$app->get('/settings/{setting:[A-z\-]+}', SettingsHttpController::class . ':get');
+$app->put('/settings/{setting:[A-z\-]+}', SettingsHttpController::class . ':set');
+$app->delete('/settings/{setting:[A-z\-]+}', SettingsHttpController::class . ':delete');
 
 $app->run();

@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/tests/support/backend/fixtures" isTestSource="true" packagePrefix="GuldenWallet\Tests\Support\Fixtures" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests/support/backend/helpers" isTestSource="true" packagePrefix="GuldenWallet\Tests\Support\Helpers" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/cli" isTestSource="false" packagePrefix="GuldenWallet\CLI" generated="true" />
+      <excludeFolder url="file://$MODULE_DIR$/coverage" />
       <excludeFolder url="file://$MODULE_DIR$/public" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/codeception/phpunit-wrapper" />
     </content>

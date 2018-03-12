@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace GuldenWallet\Backend\Application\Access;
 
-use Exception;
+use RuntimeException;
 
-class UnableToRefreshTokenException extends Exception
+class UnableToRefreshTokenException extends RuntimeException
 {
 }
