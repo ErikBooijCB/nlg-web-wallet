@@ -45,7 +45,8 @@ class FetchAccessTokenDetailsStatement implements PreparableStatement
             FROM
               access_tokens
             WHERE
-              ACCESS_TOKEN = :tokenIdentifier
+              ACCESS_TOKEN = :tokenIdentifier AND
+              EXPIRATION > NOW()
         ';
     }
 }
