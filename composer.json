@@ -29,7 +29,7 @@
     "server-start": "docker-compose up -d",
     "server-stop": "docker-compose down",
     "test": ["@test-static", "@test-unit", "@test-acceptance"],
-    "test-acceptance": "./vendor/bin/codecept run api",
+    "test-acceptance": "codecept run api",
     "test-code-style": ["@test-code-style:php", "@test-code-style:js"],
     "test-code-style:php": "phpcs --standard=ruleset.xml -s src/backend tests/unit/backend tests/support/backend",
     "test-code-style:js": "./node_modules/.bin/eslint src/frontend",

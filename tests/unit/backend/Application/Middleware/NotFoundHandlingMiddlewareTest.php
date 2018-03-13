@@ -7,6 +7,7 @@ use GuldenWallet\Backend\Application\Middleware\NotFoundHandlingMiddleware;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\JsonResponse;
 
 /**
@@ -33,7 +34,7 @@ class NotFoundHandlingMiddlewareTest extends TestCase
     public function test_Invoke_ShouldReturn404WithMessage(int $statusCode)
     {
         $next = function () use ($statusCode) {
-            return new JsonResponse([], $statusCode);
+            return new EmptyResponse($statusCode);
         };
 
         $response = call_user_func(

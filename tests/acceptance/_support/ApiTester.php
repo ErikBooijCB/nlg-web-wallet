@@ -19,11 +19,12 @@ class ApiTester extends \Codeception\Actor
 {
     use _generated\ApiTesterActions;
     use Helper\StepDefinitions\AccessTokenLifecycle;
+    use Helper\StepDefinitions\Settings;
 
     /**
      * @Then the response should be JSON with a :statusCode status code
      */
-    public function theResponseShouldBeJson($statusCode)
+    public function theResponseShouldBeJson(int $statusCode)
     {
         $this->seeResponseIsJSON();
         $this->seeResponseCodeIs($statusCode);
@@ -32,7 +33,7 @@ class ApiTester extends \Codeception\Actor
     /**
      * @Then the status should be :status
      */
-    public function theStatusShouldBe($status)
+    public function theStatusShouldBe(string $status)
     {
         $this->seeResponseContainsJson(['status' => $status]);
     }

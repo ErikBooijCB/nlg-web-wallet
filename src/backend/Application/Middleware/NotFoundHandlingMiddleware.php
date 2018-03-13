@@ -26,7 +26,7 @@ class NotFoundHandlingMiddleware
 
         $statusCode = $response->getStatusCode();
 
-        if (in_array($statusCode, [404, 405])) {
+        if (in_array($statusCode, [404, 405]) && empty($response->getBody()->getContents())) {
             return ResponseFactory::failure('Route or method not available', 404);
         }
 
