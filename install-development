@@ -19,11 +19,11 @@ npm run build
 printf "\n${GREEN}Done, frontend code has been built!${NC}\n"
 
 printf "\n === ${BLUE}Waiting for database container to become available${NC} === \n\n"
-while ! mysqladmin ping -h127.0.0.1 --silent; do
+while ! mysqladmin ping -h127.0.0.1 -ptesttest --skip-ssl --silent; do
     echo 'Waiting...'
     sleep 1
 
-    ((c++)) && ((c==20)) && break
+    ((c++)) && ((c==60)) && break
 done
 printf "\n${GREEN}Done, database container is ready!${NC}\n"
 
@@ -37,7 +37,7 @@ if [ "$TRAVIS" = "true" ]; then
 fi
 
 printf "\n === ${BLUE}Preparing database for migration${NC} === \n\n"
-cat docker/pre-migration.sql | mysql -h127.0.0.1 -uroot -ptesttest --silent
+cat docker/pre-migration.sql | mysql -h127.0.0.1 -uroot -ptesttest --silent --skip-ssl
 printf "\n${GREEN}Done, database is prepared!${NC}\n"
 
 printf "\n === ${BLUE}Migrating database${NC} === \n\n"
